@@ -1,0 +1,40 @@
+<div class="container" >
+    <center><h1>Pending List</h1></center>
+   
+
+
+
+<div ng-repeat="c in customers" >
+   <center><b  style= "font-size: 25px;"> {{c.Firstname}} {{c.LastName}}</b></center>
+    <table class="table table-responsive table-bordered table-condensed" style="padding-top:50px; ">
+        <thead>
+            <tr>
+                <th>SNO.</th>
+                <th>Chiti ID</th>
+                <th>Date</th>
+                <th>Per</th>
+                <th>Sowji Profit</th>
+                <th>Received</th>  
+        </tr>
+    </thead>
+        <tbody  ng-repeat="h in collection"  >
+            
+            <tr class="info" ng-show = "h.haminame == c.Firstname +' ' + c.LastName">
+                <td>{{h.id}}</td>
+                <td>{{h.chiti}}</td>
+                <td>{{changeDateUserFormat(h.date)}}</td>
+                <td>{{h.amount}}</td>
+                <td>{{h.sowji}}</td>
+                <td><input type="checkbox" ng-model="h.received" ng-false-value= "0" ng-true-value="1" ></td>
+           
+            </tr>
+            
+        </tbody>
+    </table>  
+  
+</div>
+<center><button class="btn btn-primary " ng-click="editrcollection()" >Update</center>
+</div>
+
+
+

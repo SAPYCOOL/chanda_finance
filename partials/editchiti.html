@@ -1,0 +1,162 @@
+<form novalidate name="editchitiform" ng-submit="editchiti()" ng-init="getchitilist()">
+    <div class="form-inline">
+       <div class="row text-center">
+          <div style = "padding-top : 50px;" class ="col-md-4">
+             <div class="form-group">
+                <label>Customer Name:</label>
+                <select  ng-model="chiti.customer" name="customer" id="customer" ng-options="c.id as c.Firstname+ ' ' +c.LastName+'('+c.HamiFirstName+')' for c in customers" class= "form-control" required>
+                   <option selected value="">select Customer</option>
+                </select>
+             </div>
+             <div role="alert">
+                <span class="error" ng-show= "(chitiform.customer.$dirty || submitted )&& chitiform.customer.$error.required" >
+                Required!
+                </span>
+             </div>
+          </div>
+          <div style = "padding-top : 50px;" class ="col-md-2">
+             <div class="form-group">
+                <label>Chiti code:</label>
+                <input style="width: 50%;" type="text" ng-model="chiti.code" name="code" id="code"  class= "form-control">
+             </div>
+             <div role="alert">
+                <span class="error" ng-show= "(chitiform.nAme.$dirty || submitted )&& chitiform.nAme.$error.required" >
+                Required!
+                </span>
+             </div>
+          </div>
+          <div style = "padding-top : 50px;" class ="col-md-3">
+             <div class="form-group">
+                <label>Date:</label>
+                <div class="input-group date" >
+                     <input  type="text" class="form-control" ng-change="setDate()"  placeholder="Date" ng-model="chiti.date" name="dAte" id="dAte" autocomplete="off" ><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+             </div>
+          </div>
+          <div style = "padding-top : 50px;" class ="col-md-3">
+             <div class="form-group">
+                <label>Chiti Type :</label>
+                <select style="width: 50%;" ng-model="chiti.tYpe" class="form-control" ng-options="t.id as t.type for t in chititypes" name="tYpe" id="tYpe" required >
+                   <option selected value="">Select Chiti Type</option>
+                </select>
+             </div>
+             <div role="alert">
+                <span class="error" ng-show="(chitiform.tYpe.$dirty || submitted) && chitiform.tYpe.$error.required">
+                Required!
+                </span>
+             </div>
+          </div>
+       </div>
+       <div class="row text-center" style=" padding-top:30px;">
+          <div style = "padding-top : 50px;" class ="col-md-3">
+             <label for="iscountable">Is Countable</label>
+             <select name="iscountable" id="iscountable" class="form-control" ng-model = "chiti.iscountable">
+                <option value="0"> Is countable</option>
+                <option value="1"> Yes </option>
+                <option value="2"> No </option>
+             </select>
+          </div>
+          <div style = "padding-top : 50px;" class ="col-md-3">
+             <div class="form-group">
+                <label>Status : </label>
+                <select class="form-control" ng-model="chiti.status" name="status" id="status" required >
+                   <option value="1">Pending</option>
+                   <option value="2">Closed</option>
+                </select>
+                <div role="alert">
+                   <span class="error" ng-show="(chitiform.status.$dirty || submitted) && chitiform.status.$error.required">
+                   Required!
+                   </span>
+                </div>
+             </div>
+          </div>
+          <div style = "padding-top : 50px;" class ="col-md-3 ">
+             <div class="form-group">
+                <label>Amount:</label>
+                <input  style="width: 50%;" type="number" id="aMount" ng-model="chiti.chitiamount" name="aMount" id="aMount" class="form-control" placeholder="Amount" required > 
+                <div role="alert">
+                   <span class="error" ng-show="(chitiform.aMount.$dirty || submitted) && chitiform.aMount.$error.required" >
+                   Required!
+                   </span>
+                </div>
+             </div>
+          </div>
+          <div style = "padding-top : 50px;" class ="col-md-3">
+             <div class="form-group">
+                <label ng-show="chiti.tYpe==1" >Per Day:</label>
+                <label ng-show="chiti.tYpe==2" >Per Week:</label>
+                <label ng-show="chiti.tYpe==3" >Per 10's:</label>
+                <label ng-show="chiti.tYpe==4" >Per Month:</label>
+                <input  style="width: 40%;" type="number" ng-model="chiti.pdwtm" class="form-control" name="pdwtm" id="pdwtm" required >
+                <div role="alert">
+                   <span class="error" ng-show= "(chitiform.pd.$dirty || submitted) && chitiform.pd.$error.required">
+                   Required!
+                   </span>
+                </div>
+             </div>
+          </div>
+       <!-- </div>
+       <div class="container row" style="padding-top: 50px;padding-left: 50px ;" > -->
+          <div style = "padding-top : 50px;" class ="col-md-3" ng-show="carray['hami']!=90 && carray['hami']!=30">
+             <div class="form-group">
+                <label>Sowji Comm :</label>
+                <input type="number" ng-model="chiti.sowji" class="form-control" name="sowji" id="sowji" >
+             </div>
+          </div>
+          <div style = "padding-top : 50px;" class ="col-md-3" ng-show="carray['hami']==90">
+             <div class="form-group">
+                <label>Suri Comm :</label>
+                <input type="number" ng-model="chiti.suri" class="form-control" name="suri" id="suri" >
+             </div>
+          </div>
+          <div style = "padding-top : 50px;" class ="col-md-4" ng-show="carray['hami']==30">
+             <div class="form-group">
+                <label>Fullandevi Comm :</label>
+                <input type="number" ng-model="chiti.fullandevi" class="form-control" name="fullandevi" id="fullandevi" >
+             </div>
+          </div>
+          <!--<div class="col-md-3" ng-show="carray['hami']==">
+             <div class="form-group">
+                 <label>Fullandevi Comm :</label>
+                 <input type="number" ng-model="chiti.fullandevi" class="form-control" name="fullandevi" id="fullandevi" >
+             </div>
+             </div>-->
+          <div style = "padding-top : 50px;" class ="col-md-3" ng-show="chiti.tYpe==4">
+             <div class="form-group">
+                <label>Interest Rate:</label>
+                <input  style="width: 35%;" type="text" ng-model="chiti.interestrate" class="form-control" name="interestrate" id="interestrate" >
+             </div>
+          </div>
+          <!-- <div class="col-md-4" >
+             <div class="form-group">
+                <label>No. of Entries</label>
+                <input style="width: 35%;" type="number" ng-model= "chiti.days" class="form-control">
+             </div>
+          </div> -->
+      
+          <div style = "padding-top : 50px;" class ="col-md-3"> 
+             <label for="ccomm">Cutting comm: </label>
+             <input type="number" class="form-control" ng-model="chiti.ccomm" id="ccomm" name="ccomm"  >
+          </div>
+<!--          
+        </div>
+        <div class="row " style=" padding-top:30px;padding-left: 30px;"> -->
+            <div ng-show="carray['hami']==90" style = "padding-top : 50px;" class ="col-md-3" style="align-content: initial;" >
+                <label for="suriccomm">Suri Cutting comm: </label>
+                <input type="number" class="form-control" ng-model="chiti.suriccomm" id="suriccomm" name="suriccomm"  >
+             </div>
+          <div style = "padding-top : 50px;" class ="col-md-4">
+             <label>Note :</label>
+             <textarea style="width: 300px;height: 100px;" style="left: 0%;" ng-model = "chiti.note" class="form-control" >.</textarea>
+          </div>
+          <div ng-show="carray['hami']==90" style = "padding-top : 50px;" class ="col-md-3">
+               
+        </div>
+       </div>
+       <div class="text-center"style="padding-top:50px";>
+          <button type="button" class="btn btn-primary"><a style="color: white;" ng-href="#/createcustomer">Add Customer</a></button>  
+          <input type="submit" class="btn btn-primary" value="Edit Chiti">            
+       </div>
+    </div>
+ </form>
+ {{response}}

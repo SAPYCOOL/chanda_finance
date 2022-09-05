@@ -1,0 +1,57 @@
+<form novalidate name="editasaluform" ng-submit="editasalu()" ng-init="getasalu()">
+    <div class="form-inline">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Customer Name:  </label>
+                <select class="form-control" ng-options="c.id as c.Firstname + ' '+ c.LastName + '(' + c.HamiFirstName + ')' for  c in customers" ng-model="asalu.customer" name="customer" id="customer"   > 
+                    <option value="">Select Customer</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Date:</label>
+                <div class="input-group date">
+                    <input type="text" class="form-control" ng-change="setDate()" placeholder="Date" ng-model="asalu.date" name="dAte" id="dAte" autocomplete="off"> <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i> </span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Amount :</label>                                
+                <input type="number" class="form-control" ng-model= "asalu.amount">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Chiti :  </label> 
+                <select ng-options="z.id as z.id for z in chiti" ng-model="asalu.chiti" name="status" id="status" class="form-control" >
+                </select>
+               
+            </div>
+        </div>
+
+</div>
+<br>
+<div class="form-inline " style="padding-top: 50px;" >
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Note :</label>
+           <textarea style="width: 400px ;height : 100px"  ng-model = "asalu.note"> </textarea >
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <input type="checkbox" style="width: 40px ;height : 30px" ng-model="rcvdchck" ng-true-value ="1" ng-false-value = "0" class="form-control">
+            <label style="font-size: 20px ;" >Received amount Entry</label>
+        </div>
+    </div>
+    <div class="col-md-4"></div>
+
+
+</div>
+<div class="col-md-12 text-center">
+<input class="btn btn-primary"   type="submit" value="submit">
+</div>
+</form>

@@ -1,0 +1,86 @@
+<div class="container" ng-init="init()">
+    <div style="border: 1px inset black;border-radius: 5px;width: 500px;margin: auto;padding: 40px;">
+        <h1 style="text-align: center;" >Edit CF Trans</h1>
+        <form autocomplete="off" novalidate  name="editcftransForm" ng-submit = "editcftrans()"  style="padding-top: 50px;" >
+            
+            <div class="col-md-12">
+                <div class="item form-group has-success text-center">
+                    <label class="col-md-4 col-xs-4 col-sm-4 text-right" for="date">Date: <span class="required">*</span>
+                    </label> 
+                    <div class="col-md-8 col-xs-8 col-sm-8">
+                        <input onfocus="initArrow(this)" onkeydown="setArrow(event,this)" style="width: 153px;" id="date" ng-model="cftrans.date" name="date" class="date-picker form-control  has-feedback-left date" type="text" required autocomplete="off" focus> 
+                        <!-- onblur="setProperValue(this)" -->
+                        <span class="error" ng-show="(editcftransForm.date.$dirty || submitted) && editcftransForm.date.$error.required" >
+                            Date Required!
+                        </span>
+                    </div>
+                 </div>
+            </div>
+            <div class="col-md-12"  style="margin-top: 15px;">
+                <div class="form-group">
+                    <label class="col-md-4 col-xs-4 col-sm-4 text-right" >chiti</label>
+                    <div class="col-md-8 col-xs-8 col-sm-8">
+                        <select ng-change="getcfpaata()" ng-model="cftrans.chiti" name="chiti" id="chiti" ng-options="c.id as c.chitiname + '('+c.code+')'  for c in cfchiti" class= "form-control"  focus required>
+                        <option selected value="">Select Chiti</option>
+                        </select>   
+                        <span class="error" ng-show="(editcftransForm.chiti.$dirty || submitted) && editcftransForm.chiti.$error.required" >
+                            Chiti Required!
+                        </span>
+                    </div>
+                </div>                   
+            </div>
+            <div class="col-md-12"  style="margin-top: 15px;">
+                <div class="form-group">
+                    <label class="col-md-4 col-xs-4 col-sm-4 text-right" >Paata: {{typeof(cftrans.paata)}}</label>
+                    <div class="col-md-8 col-xs-8 col-sm-8">
+                        <select ng-change="" ng-model="cftrans.paata" name="paata" id="paata" ng-options="p.id as p.no for p in paata" class= "form-control"  focus required>
+                        <option value="">Select Paata</option>
+                        </select>   
+                        <span class="error" ng-show="(editcftransForm.chiti.$dirty || submitted) && editcftransForm.chiti.$error.required" >
+                            Chiti Required!
+                        </span>
+                    </div>
+                </div>                   
+            </div>
+            <div class="col-md-12" style="margin-top: 15px;">
+                <div class="form-group">
+                    <label class="col-md-4 col-xs-4 col-sm-4 text-right" >Customer</label>
+                    <div class="col-md-8 col-xs-8 col-sm-8">
+                        <input type="text" id="customername" name="customername" ng-model="cftrans.customername" class="form-control"  typeahead="customer.customername + ' ' + customer.cusno for customer in cfchiticustomers | filter:{customername:$viewValue} " autocomplete="off" required focus>
+                        <span class="error" ng-show="(editcftransForm.customername.$dirty || submitted) && editcftransForm.customername.$error.required" >
+                            Customer Required!
+                        </span>
+                    </div>
+                </div>                   
+            </div>
+            <div class="col-md-12" style="margin-top: 15px;">
+                <div class="form-group">
+                    <label class="col-md-4 col-xs-4 col-sm-4 text-right" >Debit:</label>
+                    <div class="col-md-8 col-xs-8 col-sm-8">
+                        <input type="text" ng-model="cftrans.debit" name="debit" id="debit" class="form-control" autocomplete="off" focus >
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" style="margin-top: 15px;">
+                <div class="form-group">
+                    <label class="col-md-4 col-xs-4 col-sm-4 text-right" >Credit:</label>
+                    <div class="col-md-8 col-xs-8 col-sm-8">
+                        <input type="text" ng-model="cftrans.credit" name="credit" id="credit" class="form-control" autocomplete="off" focus >
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" style="margin-top: 15px;">
+                <div class="form-group">
+                    <label class="col-md-4 col-xs-4 col-sm-4 text-right" >Note:</label>
+                    <div class="col-md-8 col-xs-8 col-sm-8">
+                        <textarea ng-model="cftrans.note" name="note" id="note" class="form-control" autocomplete="off" >
+                            
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center" >
+                <input type="submit" style="margin-top: 15px;" class="btn btn-primary"  value="edit">
+            </div>
+        </form>        
+    </div>

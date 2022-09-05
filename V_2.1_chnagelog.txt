@@ -1,0 +1,336 @@
+changes for Aug 29
+-------------------
+-> ALTER TABLE `received` ADD `colid` INT(10) NOT NULL AFTER `chiti`;
+
+DROP TABLE `asalu`, `cfchiti`, `cfchiticustomers`, `cfcustomers`, `cfpaata`, `chitfund`, `chiti`, `collection`, `customers`, `drcr`, `interest`, `interestrows`, `received`, `sowji`, `sowjichiti`, `without`;
+
+V 2.1
+------
+Changes
+---------
+-> Changes in chiti.html
+    -> Print button for displaying only daily asalu list
+-> Ledger customername heading error solved
+
+
+Works to be done
+----------------
+1.  createcfpaata
+2. 
+
+db changes
+-----------
+createcfchiti table 
+-> CREATE TABLE `finance`.`cfchiti` ( `id` INT NOT NULL AUTO_INCREMENT ,`date` DATE NOT NULL , `chitiname` VARCHAR(50) NOT NULL , `code` INT(10) NOT NULL , `no` INT(10) NOT NULL , `amount` INT(10) NOT NULL , `created` DATETIME NOT NULL , `updated` DATETIME NOT NULL , `deleted` BOOLEAN NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+-> CREATE TABLE  `finance`.`cfchiticustomers` ( `id` INT NOT NULL AUTO_INCREMENT , `chiti` INT(10) NOT NULL, `customer` INT(10) NOT NULL , `cusno` INT(10) NOT NULL , `created` DATETIME NOT NULL , `updated` DATETIME NOT NULL , `deleted` BOOLEAN NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+
+inserted 4 chiti's
+-------------------
+-> INSERT INTO `cfchiti` (`id`, `date`, `chitiname`, `code`, `no`, `amount`, `created`, `updated`, `deleted`) VALUES (NULL, '2020-01-01', 'sowji chiti', '0', '20', '50000', '2021-06-09 00:00:00', '2021-06-09 00:00:00', '0');
+-> INSERT INTO `cfchiti` (`id`, `date`, `chitiname`, `code`, `no`, `amount`, `created`, `updated`, `deleted`) VALUES (NULL, '2020-03-01', 'sowji chiti', '1', '20', '50000', '2021-06-09 00:00:00', '2021-06-09 00:00:00', '0');
+-> INSERT INTO `cfchiti` (`id`, `date`, `chitiname`, `code`, `no`, `amount`, `created`, `updated`, `deleted`) VALUES (NULL, '2020-10-01', 'lucky chiti', '0', '20', '20000', '2021-06-09 00:00:00', '2021-06-09 00:00:00', '0');
+-> INSERT INTO `cfchiti` (`id`, `date`, `chitiname`, `code`, `no`, `amount`, `created`, `updated`, `deleted`) VALUES (NULL, '2020-11-01', 'lucky chiti', '1', '20', '20000', '2021-06-09 00:00:00', '2021-06-09 00:00:00', '0')
+
+
+cfpaata table 
+    -> id,date,chiti,no,customer,paata,payamount,repayamount,sripalcomm,sowjicomm
+-> CREATE TABLE `finance`.`cfpaata` ( `id` INT NOT NULL AUTO_INCREMENT , `date` DATE NOT NULL , `chiti` INT(10) NOT NULL , `no` INT(10) NOT NULL , `customer` INT(10) NOT NULL , `paata` INT(20) NOT NULL , `payamount` INT(20) NOT NULL , `repayamount` INT(20) NOT NULL , `sripalcomm` INT(10) NOT NULL , `sowjicomm` INT(10) NOT NULL , `created` DATETIME NOT NULL , `updated` DATETIME NOT NULL , `deleted` BOOLEAN NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+-> ALTER TABLE `cfcustomers` ADD `first` INT(10) NOT NULL AFTER `phone`, ADD `firstid` INT(10) NOT NULL AFTER `first`;
+-> CREATE TABLE `finance`.`cftrans` (`id` INT NOT NULL AUTO_INCREMENT ,`date` DATE NOT NULL,`chiti` INT(10) NOT NULL,`paata` INT(10) NOT NULL,`customer` INT(10) NOT NULL,`debit` INT(20) NOT NULL,`credit` INT(20) NOT NULL, `note` VARCHAR(500) NOT NULL , `created` DATETIME NOT NULL,`updated` DATETIME NOT NULL,`deleted` BOOLEAN NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+-> ALTER TABLE `cftrans` ADD `note` VARCHAR(500) NOT NULL AFTER `credit`;
+
+June 9 
+-------
+
+
+
+work done
+----------
+-> Created tables cfchiti,cfpaata in db
+-> inserted values in cfchiti table of sowji chiti(0,1),lucky chiti(0,1)
+-> made createcfpaata.html -> appjs pending
+
+
+pending work
+------------
+->deisgn createcfchiti page 
+
+
+
+
+
+June 11
+--------
+-> working on createcfpaata
+
+Pending work
+------------
+-> getcustomerid function 
+-> createcfpaata in indexphp , dbHandler
+
+
+June 15 
+--------
+work done
+---------
+-> Created post(cfpaata ) fullstack
+
+pending work
+------------
+-> Required fields,test createcfpaata page
+
+June 16
+--------
+work done
+---------
+-> Required fields in createcfpaata
+
+pending work
+-> getcfpaata fullstack
+
+
+June 24
+--------
+working on
+----------
+-> getcfpaata fullstack(Done)
+-> getcfpaata/id fullstack
+-> createcfchiticustomers ->popupanim
+
+work done
+----------
+-> getcfpaata fullstack
+
+
+June 25
+-------
+working on
+----------
+-> createcfchiticustomers (done but appjs pending work)
+
+pending work 
+-------------
+-> getcfpaata/id fullstack
+
+
+work done
+----------
+->popupanim
+
+
+June 27
+--------
+working on
+----------
+-> getcfpaata fullstack ->cusno value error
+
+pending work
+-------------
+-> getcfpaata/id fullstack
+
+July 7
+-------
+-> Changes in chiti.html
+-> Print button for displaying only daily asalu list
+
+July 10
+-------
+working on
+----------
+-> getcfpaata fullstack ->cusno value error
+-> subledger type in createcfcustomers
+
+
+
+July 11
+-------
+working on
+----------
+-> cftrans page fullstack -> 1st html page
+-> db fields -> id,date,chiti,paata,customer,debit,credit,note 
+-> show cftrans in daybook
+
+db changes
+----------
+-> ALTER TABLE `cfcustomers` ADD `first` INT(10) NOT NULL AFTER `phone`, ADD `firstid` INT(10) NOT NULL AFTER `first`;
+-> ALTER TABLE `cfcustomers` CHANGE `firstid` `firstid` VARCHAR(50) NOT NULL;
+
+work done
+---------
+-> getcfpaata fullstack ->cusno value error
+-> subledger type in createcfcustomers
+
+
+July 12
+-------
+
+working on
+----------
+-> create cftrans page fullstack -> 1st html page
+-> db fields -> id,date,chiti,paata,customer,debit,credit,note 
+
+
+work done
+---------
+-> Ledger customername heading error solved
+
+
+
+July 12
+-------
+
+working on
+----------
+-> getcftrans fullstack ->html page
+
+db changes
+----------
+-> CREATE TABLE `finance`.`cftrans` (`id` INT NOT NULL AUTO_INCREMENT ,`date` DATE NOT NULL,`chiti` INT(10) NOT NULL,`paata` INT(10) NOT NULL,`customer` INT(10) NOT NULL,`debit` INT(20) NOT NULL,`credit` INT(20) NOT NULL,`created` DATETIME NOT NULL,`updated` DATETIME NOT NULL,`deleted` BOOLEAN NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+-> ALTER TABLE `cftrans` ADD `note` VARCHAR(500) NOT NULL AFTER `credit`;
+
+
+work done
+---------
+-> Ledger customername heading error solved
+-> create cftrans page fullstack 
+-> db fields -> id,date,chiti,paata,customer,debit,credit,note 
+
+
+
+July 13
+-------
+
+working on
+----------
+-> getcftrans fullstack ->html page
+-> show cftrans in daybook
+
+ideas
+------
+-> Getfilter by customer page -> thinking of which customers to bring and how to display subledger
+
+
+
+July 14
+--------
+
+working on
+----------
+-> getcftrans fullstack ->html page
+-> show cftrans in daybook
+
+ideas
+------
+-> Getfilter by customer page -> thinking of which customers to bring and how to display subledger
+-> sowji chiti press -> getcftrans 
+
+
+July 17
+--------
+work done
+----------
+-> getcftrans fullstack 
+-> show cftrans in daybook
+
+next work
+----------
+-> Edit cftrans full stack
+
+
+July 18 
+--------
+working done
+-------------
+-> Edit cftrans full stack
+
+
+
+July 20
+---------
+Work done
+---------
+-> getcustomerid function error -> solved
+-> added highlight for customers pending balance
+
+Next work
+---------
+-> get repayamount details
+-> get balance customers name and amount in createcftrans
+
+
+July 21
+-------
+Working on
+---------
+-> editchiti with collection
+
+work done
+--------
+-> Error in cfpaata page of mismatch of paid entries with customerlist -> SOLVED
+
+
+July 22
+-------
+working on
+----------
+-> Suri Ledger
+-> Edit suri chiti's
+
+
+
+July 28
+-------
+-> Chiti status pending modal in chiti.html
+
+
+Aug 4
+-----
+-> editcollection error
+-> In daybook ccomm increasing with each submit click
+
+
+
+
+Aug 11
+--------
+Changes in chiti.html 
+-> Add amount in chiti rectified ->changed files -> chiti.html,appjs
+-> Buttons width set according to mini laptop
+-> rectified deleting chiti call in indexphp 
+->background yellow for tables in daybook -> daybook
+
+
+Aug 12
+------
+-> chiti.html+appjs
+-> cfpaata.html
+-> create drcr.html
+
+
+Aug 26
+------
+-> daybook.html
+-> getting received amount entries for getting collections of received amount
+
+customerlist = mcx - commodity, comm-> brokerage
+
+
+Aug 29 
+------
+-> ALTER TABLE `received` ADD `colid` INT(10) NOT NULL AFTER `chiti`;
+
+Aug 30
+--------
+-> Changing whole daybook page with appjs
+    -> added new collection type by adding colid to received amt and linked received amt to collection
+    -> done with old collection model -> tied up with customer
+-> ALTER TABLE `cfcustomers` ADD `maincus` INT(10) NOT NULL AFTER `firstid`;
+
+
+
+Type
+cash in 
+cash out
+mcx
+fno
