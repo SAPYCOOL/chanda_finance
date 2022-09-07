@@ -208,7 +208,7 @@
                 <td class="noprint"><a href="#/editcollection/{{c.id}}"><span class="glyphicon glyphicon-edit"></span> </a></td>
                 <td class="noprint">
                    <button type="button" ng-show="!c.received" ng-click="rcvdcolpopup('open',c.id,c.amount)" class="btn btn-primary">Received</button>
-                   <button type="button" ng-click="updatenotes(c.id)" class="btn btn-primary">Update Notes</button>
+                   <button type="button" ng-click="updatenotes(c.id,c.amount)" class="btn btn-primary">Update Notes</button>
                 </td>
              </tr>
     </table>
