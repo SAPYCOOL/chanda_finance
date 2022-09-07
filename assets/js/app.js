@@ -2842,7 +2842,7 @@ $scope.getasalulist = function(){
     }
 
 }
-
+//small feature
     $scope.checkcolor = function(clr){
         if(clr){
             return "danger";
