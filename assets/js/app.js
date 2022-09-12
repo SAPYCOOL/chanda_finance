@@ -2598,7 +2598,7 @@ app.controller('chitiCtrl', function($route, $scope, $rootScope, $routeParams, $
 
 
     $scope.chckparam = function(cid){
-        console.log(cid , $scope.paramcolid);
+        // console.log(cid , $scope.paramcolid);
         if(cid == $scope.paramcolid){
             return "danger";
         }
@@ -2651,14 +2651,16 @@ $scope.clpen = function(){
     //     })
     // }
 
-    $scope.updatenotes = function(colid){
+    $scope.updatenotes = function(colid,colamt){
         if(confirm("Are you sure you want to update the notes?")){
             if(colid){
                 var filter = {chiti:$scope.chiti.id,colid:colid,sort_by:"a.rcvddate",sort_order:"asc",limit:1000}
                 Data.get("receivedamount",filter).then(function(results){
                     $scope.notesrcvdamt = results.receivedamount;
                     if($scope.notesrcvdamt){
+                        var rcvdttl = 0;
                         for(i=0;i<$scope.notesrcvdamt.length;i++){
+                            rcvdttl += $scope.notesrcvdamt[i].amount;
                             if(i==0){
                                 var notes = $scope.notesrcvdamt[i].amount + "(" + changeDateUserFormat($scope.notesrcvdamt[i].rcvddate) + ")" ; 
                             }else{
@@ -2667,8 +2669,15 @@ $scope.clpen = function(){
                             }
                         }
     
-                        if(notes){    
-                            Data.put("collection/"+colid,{notes:notes}).then(function(results){
+                        if(notes){  
+                            var datatemp = {notes:notes};
+                            if(rcvdttl < colamt){
+                                datatemp.received = "0";
+                                datatemp.rcvddate = " ";
+                                datatemp.receivedfrom = "0";
+                            }
+
+                            Data.put("collection/"+colid,datatemp).then(function(results){
                                 Data.toast(results);
                                 $scope.init();
                             });
