@@ -6519,17 +6519,21 @@ app.controller('ledgerCtrl',function($route, $scope, $rootScope, $routeParams, $
 
     $scope.getopbal = function(){
         var balance = 0;
+        var asalubal = 0;
         if($scope.drcr){
             for(i=0;i<$scope.drcr.length;i++){
                 console.log("bfr",$scope.drcr[i]);
                 if($scope.drcr[i].debit>0){
                     console.log("debit->",i,$scope.drcr[i]);
                     balance -= Number($scope.drcr[i].debit);
+                    (!$scope.drcr[i].interestentry)?asalubal -= Number($scope.drcr[i].debit):"";
                 }else if($scope.drcr[i].credit > 0){
                     console.log("credit>0->",i,$scope.drcr[i]);
                     balance += Number($scope.drcr[i].credit);
+                    (!$scope.drcr[i].interestentry)?asalubal += Number($scope.drcr[i].credit):"";
                 }
                 $scope.drcr[i].balance = balance;
+                $scope.drcr[i].asalubal = asalubal;
             }
         }
                 $scope.opbalbool = 1;
