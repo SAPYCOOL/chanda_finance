@@ -376,6 +376,78 @@ return date;
 
 
 
+function isNumeric(str) {
+  if (typeof str != "string") return false // we only process strings!  
+  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+}
+
+function pmnames(str){
+  str = str.toLocaleLowerCase();
+  names = ["rashi","dad","ac","sowji","my","bank","g.p"];
+  for (var i = 0; i < names.length; i++) {
+    // console.log(str,names[i],str.indexOf(names[i]));
+    if(str.indexOf(names[i]) >= 0){
+      // console.log(str,names[i],str.indexOf(names[i]));
+      return true;
+    }
+  }
+  return false;
+}
+
+
+function txtbrackets(str){
+  // var testString = "(Charles) de (Gaulle), (Paris) [CDG]"
+  var reBrackets = /\((.*?)\)/g;
+  var listOfText = [];
+  var found;
+  while(found = reBrackets.exec(str)) {
+    listOfText.push(found[1]);
+  };
+  return listOfText;
+}
+
+function singlenum(arr){
+  var rtnarr = {num: 0,number:[],nan:[]};var temparr = [];
+  if(arr && arr.length){
+    for(k=0;k<arr.length;k++){
+      if(!isNaN(arr[k])){
+        rtnarr.num += 1;
+        rtnarr.number.push(arr[k]);
+      }else{
+        // console.log(arr[k]);
+        if(arr[k].indexOf('-') >=0 || arr[k].indexOf(',') >=0 ){
+          (arr[k].indexOf('-') >=0)?temparr = arr[k].split('-'):"";
+          (arr[k].indexOf(',') >=0)?temparr = arr[k].split(','):"";
+          // console.log(temparr);
+          if(temparr && temparr.length){
+            for(j=0;j<temparr.length;j++){
+              // console.log(temparr[j]);
+              var isnum = true;
+              if(isNaN(temparr[j])){
+                isnum = false;
+              }
+            }
+            if(isnum){
+              rtnarr.num += 1;
+              rtnarr.number.push(arr[k]);
+            }else{
+              rtnarr.nan.push(arr[k]);
+            }
+          }
+        }else{
+          rtnarr.nan.push(arr[k]);
+        }
+      }
+    }
+    // console.log(rtnarr);
+  }else{
+    rtnarr = {num:0,number:[]};
+  }
+    return rtnarr;
+}
+
+
 
 //validating gst number
 

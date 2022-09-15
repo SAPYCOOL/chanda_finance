@@ -8,15 +8,20 @@ app.config(['$routeProvider',
                 templateUrl: 'partials/login.html',
                 controller: 'loginCtrl'
             })
-         .when('/dashboard', {
+            .when('/dashboard', {
                 title: '/',
                 templateUrl: 'partials/dashboard.html',
                 controller: 'dashboardCtrl'
             })
-        .when('/', {
+            .when('/', {
                 title: '/',
                 templateUrl: 'partials/dashboard1.html',
                 controller: 'dashboard1Ctrl'
+            })
+            .when('/dailyshortcut', {
+                title: 'Daily collection',
+                templateUrl: 'partials/dailyshortcut.html',
+                controller: 'dailyShortcutCtrl'
             })
             .when('/createcustomer', {
                 title: 'createcustomer',
@@ -4646,6 +4651,155 @@ $scope.plusDate = function(plusNo){
         console.log("clicked");
     });
 });
+
+
+
+app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeParams, $location, $http, Data) {
+    $scope.init = function(){
+        focusonTime("note",200);
+    }
+
+
+    $scope.getnotes = function(arr){
+        
+    }
+
+    $scope.filterData = function(){
+        $scope.dailyarr = [];
+        $scope.errentries = [];
+        var notesarr  = $scope.daily.note.split(/\r?\n/);cidarr = [];
+        if(notesarr && notesarr.length){
+            for(i=0;i<notesarr.length;i++){
+                var line1 = ""; line2 = "";
+                var linetemp = "";linetemp1="";tempword="";
+                var brtxt1 = []; brtxt2 = [];res1 = {}; res2 = {};
+                finaltemp = {}
+                if(notesarr[i].indexOf('-') >= 0){
+                    line1 = notesarr[i].slice(0,notesarr[i].indexOf('-'));
+                    line2 = notesarr[i].slice(notesarr[i].indexOf('-'));
+                    brtxt1 = txtbrackets(line1);
+                    brtxt2 = txtbrackets(line2);
+                    // console.log("pmmode",finaltemp.pmmode);
+                    if(brtxt1 && brtxt1.length){
+                        res1 = singlenum(brtxt1);
+                        if(res1.num == 1){
+                            finaltemp.cid = res1.number[0];
+                        }
+                    }else{
+
+                    }
+                    if(brtxt2 && brtxt2.length){
+                        res2 = singlenum(brtxt2);
+                        if(res2.num == 1){
+                            finaltemp.note = res2.number[0];
+                        }
+                        finaltemp.amt = (line2.slice(line2.indexOf('-')+1,line2.indexOf('('))).replace(/, /g, '');
+                        if(res2.nan.length){
+                            for(f=0;f<res2.nan.length;f++){
+                                if(pmnames(res2.nan[f])){
+                                    finaltemp.pmmode = res2.nan[f];
+                                }
+                            }
+                        }
+                    }else{
+                        if(!isNaN((line2.slice(line2.indexOf('-')+1)).replace(/, /g, ''))){
+                            finaltemp.amt = (line2.slice(line2.indexOf('-')+1)).replace(/, /g, '');
+                        }
+                        finaltemp.note = "";
+                        finaltemp.pmmode = "";
+                    }
+                    finaltemp.customername = line1.slice(0,line1.indexOf('('));
+
+                }else{
+                    $scope.errentries.push(notesarr[i]);
+                }
+                var tmp = {};
+                tmp = finaltemp.customername.split(' ');
+
+                //finding chiti code
+                tempword = "";
+                //storing word that is inside () in customername
+                tempword = finaltemp.customername.slice(finaltemp.customername.indexOf('(')+1 ,finaltemp.customername.indexOf(')'));
+                if(finaltemp.customername.indexOf('(') >= 0){
+                   if(isNaN(tempword)){ //if the 1st bracket has hami name
+                        tempword = finaltemp.customername.slice(finaltemp.customername.indexOf(')') + 1);
+                        if(tempword.indexOf('(') >= 0 && !isNaN(tempword.slice(tempword.indexOf('(')+1,tempword.indexOf(')')))){ //finding that if 2nd () is there and its integer or not
+                            // finaltemp.chiticode = tempword.slice(tempword.indexOf('(')+1,tempword.indexOf(')'));
+                        }
+                    }else{ //if the 1st bracket has chiti code
+                        // finaltemp.chiticode = tempword;
+                    }
+                }else{
+                    // finaltemp.chiticode = "";
+                }
+                
+                // var temp = notesarr[i];
+                //1st took customer names
+                // linetemp = temp.slice(temp.indexOf('-')+1);
+                // finaltemp.amt = (linetemp.slice(0,linetemp.indexOf('('))).replace(/, /g, '');
+
+                //slicing at first () after amount
+                // linetemp1 = linetemp.slice(linetemp.indexOf('(')+1 ,linetemp.indexOf(')'));
+
+                // if(isNaN(linetemp1)){
+                //     if(pmnames(linetemp1)){
+                //         // finaltemp.pmmode = linetemp1;
+                //         // console.log("true");
+                //     }else{
+                //         // finaltemp.note = linetemp1;    
+                //     }
+                // }else{
+                //     // finaltemp.note = linetemp1;
+                //     console.log("mtch",notesarr[i].match(linetemp1));
+                //     temparr = notesarr[i].split("(",4);
+                //     if(temparr.length > 3 && !isNaN(temparr[3].slice(0,temparr[3].indexOf(')')))){
+                //         // finaltemp.pmmode = temparr[3].slice(0,temparr[3].indexOf(')'));
+                //     }else{
+                //         console.log(temparr);
+                //         if(notesarr[i].match(linetemp1).indexOf(',') >= 0){
+                            
+                //         }else{
+                //             var ind = notesarr[i].indexOf(linetemp1) + linetemp1.length;
+                //             // finaltemp.pmmode = notesarr[i].slice(ind,ind+3);
+                //         }
+                //     }
+                // }
+                // 2nd take amt 
+                
+                // linetemp1 = linetemp[1].split('(');
+                // console.log("linetemp1-",linetemp1);
+                if(!isNaN(finaltemp.cid)){
+                    cidarr.push(finaltemp.cid);
+                }
+                $scope.dailyarr.push(finaltemp);
+            }
+            var filter = {id:{"op":"In",value:cidarr.toString()}}
+            Data.get("chiti",filter).then(function(results){
+                $scope.chitilist = results.chiti;
+                console.log($scope.chitilist);
+                if($scope.chitilist && $scope.chitilist.length){
+                    for(i=0;i<$scope.dailyarr.length;i++){
+                        for(j=0;j<$scope.chitilist.length;j++){
+                            if($scope.dailyarr[i].cid == $scope.chitilist[j].id){
+                                $scope.dailyarr[i].customer = $scope.chitilist[j].customer;
+                                $scope.dailyarr[i].tYpe = $scope.chitilist[j].tYpe;
+                                // $scope.dailyarr[i].customer = $scope.chitilist[j].customer;
+                                $scope.getnotes($scope.chitilist[j].id);
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+            console.log($scope.dailyarr);
+        }
+
+    }
+
+
+
+});
+
 
 app.controller('loginCtrl', function($route, $scope, $rootScope, $routeParams, $location, $http, Data) {
 });

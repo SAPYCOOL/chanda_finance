@@ -1,0 +1,40 @@
+<div class="container" ng-init="init()">
+    <center><h1>Daily</h1></center>
+    <div class="row">
+        <div class="col-md-6">
+            <textarea name="note" id="note" ng-model="daily.note" style="height: 600px;width:300px;" >
+        
+            </textarea>
+            
+            <button class="btn btn-primary" ng-click="filterData()">Filter</button>
+        </div>
+        <div class="col-md-6" ng-show="dailyarr">
+            <table style="max-width:100%;white-space:nowrap;" class="table table-responsive table-bordered table-condensed table-hover ">
+                <thead>
+                    <tr>
+                        <th>S NO</th>
+                        <th>Customer</th>
+                        <th>Customer id</th>
+                        <th>Chiti</th>
+                        <th>Amount</th>
+                        <th>Note</th>
+                        <th>Payment mode</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="d in dailyarr">
+                        <td>{{$index+1}}</td>
+                        <td>{{d.customername}}</td>
+                        <td>{{d.customer}}</td>
+                        <td>{{d.cid}}</td>
+                        <td>{{d.amt}}</td>
+                        <td >{{d.note}}</td>
+                        <td>{{d.pmmode}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>
