@@ -4674,6 +4674,12 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
                     if(note1 == 1){
                         $scope.dailyarr[ind].note1 = note;
                         $scope.dailyarr[ind].color = ($scope.dailyarr[ind].note != note)?"danger":"";
+                    }else if(note1 > 1 && note1 <= 2){
+                        $scope.dailyarr[ind].note1 = note + ',' + (note + 1);
+                        $scope.dailyarr[ind].color = ($scope.dailyarr[ind].note != $scope.dailyarr[ind].note1)?"danger":"";
+                    }else if(note1 > 2){
+                        $scope.dailyarr[ind].note1 = note + '-' + (note + note1 - 1);
+                        $scope.dailyarr[ind].color = ($scope.dailyarr[ind].note != $scope.dailyarr[ind].note1)?"danger":"";
                     }
                     break;
                 }
@@ -4711,7 +4717,7 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
                         if(res2.num == 1){
                             finaltemp.note = res2.number[0];
                         }
-                        finaltemp.amt = (line2.slice(line2.indexOf('-')+1,line2.indexOf('('))).replace(/, /g, '');
+                        finaltemp.amt = (line2.slice(line2.indexOf('-')+1,line2.indexOf('('))).replace(/,/g, '');
                         if(res2.nan.length){
                             for(f=0;f<res2.nan.length;f++){
                                 if(pmnames(res2.nan[f])){
