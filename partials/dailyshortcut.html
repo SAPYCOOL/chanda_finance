@@ -18,17 +18,19 @@
                         <th>Chiti</th>
                         <th>Amount</th>
                         <th>Note</th>
+                        <th>Note1</th>
                         <th>Payment mode</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="d in dailyarr">
+                    <tr ng-class="d.color" ng-repeat="d in dailyarr">
                         <td>{{$index+1}}</td>
                         <td>{{d.customername}}</td>
                         <td>{{d.customer}}</td>
                         <td>{{d.cid}}</td>
                         <td>{{d.amt}}</td>
-                        <td >{{d.note}}</td>
+                        <td>{{d.note}}</td>
+                        <td>{{d.note1}}</td>
                         <td>{{d.pmmode}}</td>
                     </tr>
                 </tbody>

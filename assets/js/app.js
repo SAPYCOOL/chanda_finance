@@ -4660,10 +4660,25 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
     }
 
 
-    $scope.getnotes = function(arr){
-        if(arr && arr.length && arr.tYpe == 5){
+    $scope.getnotes = function(arr,ind){
+        // console.log(arr);
+        if(arr && arr.tYpe == 5){
+            var note = 0; note1 = 0;
             var perday = Number(arr.chitiamount)/100;
-            
+            for(d=0;d<$scope.asalulist.length;d++){
+                if(arr.cid == $scope.asalulist[d].chiti){
+                    note = (Number($scope.asalulist[d].amount) / Number(perday)) + 1;
+                    console.log(note);
+                    note1 = Number(arr.amt)/Number(perday);
+                    console.log(note1);
+                    if(note1 == 1){
+                        $scope.dailyarr[ind].note1 = note;
+                        $scope.dailyarr[ind].color = ($scope.dailyarr[ind].note != note)?"danger":"";
+                    }
+                    break;
+                }
+            }
+            // console.log($scope.asalulist);
         }
     }
 
@@ -4779,20 +4794,25 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
             var filter = {id:{"op":"In",value:cidarr.toString()}}
             Data.get("chiti",filter).then(function(results){
                 $scope.chitilist = results.chiti;
-                console.log($scope.chitilist);
-                if($scope.chitilist && $scope.chitilist.length){
-                    for(i=0;i<$scope.dailyarr.length;i++){
-                        for(j=0;j<$scope.chitilist.length;j++){
-                            if($scope.dailyarr[i].cid == $scope.chitilist[j].id){
-                                $scope.dailyarr[i].customer = $scope.chitilist[j].customer;
-                                $scope.dailyarr[i].tYpe = $scope.chitilist[j].tYpe;
-                                // $scope.dailyarr[i].customer = $scope.chitilist[j].customer;
-                                $scope.getnotes($scope.chitilist[j]);
-                                break;
+                var filter1 = {chiti:{"op":"In",value:cidarr.toString()},group_by:"a.chiti",fields:"sum(a.amount) as amount" }
+                Data.get("asalu",filter1).then(function(results){
+                    $scope.asalulist = results.asalu;
+                    console.log($scope.chitilist);
+                    if($scope.chitilist && $scope.chitilist.length){
+                        for(i=0;i<$scope.dailyarr.length;i++){
+                            for(j=0;j<$scope.chitilist.length;j++){
+                                if($scope.dailyarr[i].cid == $scope.chitilist[j].id){
+                                    $scope.dailyarr[i].customer = $scope.chitilist[j].customer;
+                                    $scope.dailyarr[i].tYpe = $scope.chitilist[j].tYpe;
+                                    $scope.dailyarr[i].chitiamount = $scope.chitilist[j].chitiamount;
+                                    // $scope.dailyarr[i].customer = $scope.chitilist[j].customer;
+                                    $scope.getnotes($scope.dailyarr[i],i);
+                                    break;
+                                }
                             }
                         }
                     }
-                }
+                });
             });
             console.log($scope.dailyarr);
         }
