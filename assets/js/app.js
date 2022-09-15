@@ -4661,7 +4661,10 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
 
 
     $scope.getnotes = function(arr){
-        
+        if(arr && arr.length && arr.tYpe == 5){
+            var perday = Number(arr.chitiamount)/100;
+            
+        }
     }
 
     $scope.filterData = function(){
@@ -4784,7 +4787,7 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
                                 $scope.dailyarr[i].customer = $scope.chitilist[j].customer;
                                 $scope.dailyarr[i].tYpe = $scope.chitilist[j].tYpe;
                                 // $scope.dailyarr[i].customer = $scope.chitilist[j].customer;
-                                $scope.getnotes($scope.chitilist[j].id);
+                                $scope.getnotes($scope.chitilist[j]);
                                 break;
                             }
                         }
