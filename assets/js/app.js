@@ -2592,6 +2592,24 @@ app.controller('chitiCtrl', function($route, $scope, $rootScope, $routeParams, $
             "_blank");        
     }
 
+
+    $scope.plusNotes = function(ind){
+        if(ind >= 0){
+            filter = {"action" : "plus","chiti":$scope.id,"asaluid":$scope.getasalu[ind-1].id}
+            Data.put('multiupdatenotes',filter).then(function(results){ 
+                $scope.response = results.response 
+            });
+            // if($scope.getasalu[ind-1].note.indexOf(',')){
+
+            // }else if($scope.getasalu[ind-1].note.indexOf('-')){
+
+            // }else if(!isNaN($scope.getasalu[ind-1].note)){
+
+            // }
+        }
+    }
+
+
     $scope.getsinglechiti = function(){
         Data.get('chiti/'+$scope.id).then(function(results){
             Data.toast(results);
@@ -4657,20 +4675,30 @@ $scope.plusDate = function(plusNo){
 app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeParams, $location, $http, Data) {
     $scope.init = function(){
         focusonTime("note",200);
+        $scope.disp = 0;
+        $scope.dailyarr = {};
+        $scope.lastind = -1;
     }
 
 
     $scope.getnotes = function(arr,ind){
         // console.log(arr);
         if(arr && arr.tYpe == 5){
-            var note = 0; note1 = 0;
-            var perday = Number(arr.chitiamount)/100;
+            var note = 0; note1 = 0;days = 100;
+            (arr.cid == 259)? days = 400:"";
+            var perday = Number(arr.chitiamount)/days;
             for(d=0;d<$scope.asalulist.length;d++){
                 if(arr.cid == $scope.asalulist[d].chiti){
-                    note = (Number($scope.asalulist[d].amount) / Number(perday)) + 1;
-                    console.log(note);
+                    // (arr.cid == 259)?console.log($scope.asalulist[d].amount,'/',perday, (Number($scope.asalulist[d].amount) / Number(perday)) + 1):"";
+                    if($scope.asalulist[d].amount > 0){
+                        note = (Number($scope.asalulist[d].amount) / Number(perday)) + 1;
+                    }else if($scope.asalulist[d].amount = 0){
+                        note = 1;
+                    }
+                    // (arr.cid == 259)?console.log(note):"";
                     note1 = Number(arr.amt)/Number(perday);
-                    console.log(note1);
+                    // (arr.cid == 259)?console.log(note1):"";
+                    // console.log(note1);
                     if(note1 == 1){
                         $scope.dailyarr[ind].note1 = note;
                         $scope.dailyarr[ind].color = ($scope.dailyarr[ind].note != note)?"danger":"";
@@ -4825,6 +4853,133 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
 
     }
 
+    $scope.editnote1 = function(ind){
+        if($scope.lastind == ind){
+            $scope.lastind = -1;
+            if($scope.dailyarr[ind].note == $scope.dailyarr[ind].note1){
+                $scope.dailyarr[ind].color = "";
+            }else{
+                $scope.dailyarr[ind].color = "danger";
+            }
+        }else{
+            $scope.lastind = ind;
+        }
+    }
+
+    $scope.createDaily = function(){
+        console.log($scope.dailyarr);
+        $scope.submitted = 1;
+    
+        if($scope.dailyarr.length>0){
+            $scope.asalu = [];
+            for(i=0;i<$scope.dailyarr.length;i++){
+                var tmp = {};
+                tmp["date"] = changeDateSQLFormat($scope.daily.date);
+                tmp["customer"] = $scope.dailyarr[i].customer;
+                tmp["amount"] = $scope.dailyarr[i].amt;
+                tmp["chitiamount"] = 0;
+                tmp["chiti"] = $scope.dailyarr[i].cid;
+                tmp["note"] = $scope.dailyarr[i].note1;
+                $scope.asalu.push(tmp);
+            }
+            console.log($scope.asalu);
+            // Data.post("dailyCollection",{"asalu":$scope.asalu}).then(function(results){
+            //     Data.toast(results);
+            //     // $scope.dresponse = results.message;
+            //     if(results.status == "success"){
+            //         $scope.asalu = [];
+            //         $scope.init();
+            //     }
+            // });
+        }
+    }
+
+
+    $scope.showLast3 = function(cid){
+        $scope.disp = 1;
+        Data.get('asalu',{chiti:cid,sort_by : "a.date",sort_order : "desc",limit:3}).then(function(results){ 
+            $scope.lasttrans = results.asalu;
+            sortarrbydate($scope.lasttrans)
+        });
+    }
+
+    $scope.changeDateUserFormat= function(dt){
+            
+            if(dt){
+                return  changeDateUserFormat(dt);
+            }
+        }
+
+
+    
+    $scope.dtodaydate = function(){
+        d = new Date();
+        mon =d.getMonth()+1 ;
+        dte = d.getDate();
+        if(mon<10){
+            mon = "0"+mon;
+        }
+        if(dte<10){
+            dte = "0"+dte ;
+        }
+        $scope.daily.date = dte + '/' + mon+ '/' + d.getFullYear();
+    }
+
+    $scope.dyesterdaydate = function(){
+        d = new Date();
+        d.setDate(d.getDate()-1);
+        dte = d.getDate();
+        if(dte<10){
+            dte = "0"+ dte;
+        }
+        mon =d.getMonth()+1 ;
+        month="";
+        if(mon<10){
+            mon = "0"+mon;
+        }
+        $scope.daily.date = dte + '/' + mon+ '/' + d.getFullYear();
+
+    }
+    $scope.dDByesterdaydate = function(){
+        d = new Date();
+        d.setDate(d.getDate()-2);
+        dte = d.getDate();
+        if(dte<10){
+            dte = "0"+ dte;
+        }
+        mon =d.getMonth()+1 ;
+        if(mon<10){
+            mon = "0"+mon;
+        }
+        $scope.daily.date = dte + '/' + mon+ '/' + d.getFullYear();
+    }
+
+    $scope.dD2Byesterdaydate = function(){
+        d = new Date();
+        d.setDate(d.getDate()-3);
+        dte = d.getDate();
+        if(dte<10){
+            dte = "0"+ dte;
+        }
+        mon =d.getMonth()+1 ;
+        if(mon<10){
+            mon = "0"+mon;
+        }
+        $scope.daily.date = dte + '/' + mon+ '/' + d.getFullYear();
+
+    }
+
+    $scope.initiateCalendar = function() {
+        $('.input-group.date').datepicker({
+            format: 'dd/mm/yyyy',
+            orientation: "auto"
+        });
+       
+            $('.input-group.date').each(function() {
+        //$(this).datepicker('setDate', $scope.filter.from_date);
+        });
+    }
+    $scope.initiateCalendar();
 
 
 });
@@ -5193,7 +5348,8 @@ app.controller('daybookCtrl', function($route, $scope, $rootScope, $routeParams,
         if(dt){
               return  changeDateUserFormat(dt);
         }
-        }
+    }
+
         $scope.getreceivedamount = function(){
             console.log($scope.posno);
             $scope.posno++;

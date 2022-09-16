@@ -2643,6 +2643,68 @@ $app->put('/asalu/:id',function($id) use ($app){
 
 
 
+	$app->put('/multiupdatenotes',function() use ($app){
+		$r= json_decode($app->request->getBody());
+		
+		$action = putParam($r,"action");
+		$chiti = putParam($r,"chiti");
+		$asaluid = putParam($r,"asaluid");
+
+		$db= new DbHandler();
+		$getdata =array();
+		$params = $db->getFunctionParam("asalu");
+		for($i=0;$i<sizeof($params);$i++){
+			if($params[$i]== "chiti"){
+				array_push($getdata,$chiti);
+			}else if($params[$i]== "sort_by"){
+				array_push($getdata,"a.date");
+			}else if($params[$i]== "sort_order"){
+				array_push($getdata,"asc");
+			}else{
+				array_push($getdata,"");
+			}
+		}
+
+		$asaluDetail = call_user_func_array(array($db,'getasalu'),$getdata);
+		if(sizeof($asaluDetail)>0){
+			for($j=0;$j<sizeof($asaluDetail);$j++){
+				if($asaluDetail[$j].id == $asaluid){
+					
+					break;
+				}
+			}
+
+			$params = $db->putFunctionParam("asalu");
+			$updateField = array();
+			$updateField["id"]= $id ;
+			$putdata =array();
+			array_push($putdata,$updateField);
+			for($i=0;$i<sizeof($params);$i++){
+				if(putParam($r,$params[$i])){
+					array_push($putdata,putParam($r,$params[$i]));
+				}else{
+					array_push($putdata,"");
+				}
+			}
+			array_push($putdata,"");
+		}
+		$editDetail = call_user_func_array(array($db,'editasalu'),$putdata);
+
+		if($editDetail["status"] == SUCCESS){
+			$response["error"] = false;
+			$response["status"] = "success";
+			$response["id"] = $id;
+			$response["message"] = "Woot! , successfully edited Asalu information";
+		}else{
+			$response["error"] = "true";
+			$response["status"] = "success";
+			$response ["message"] = "Oops! An error occured while editing Asalu information";
+			$response["err"] = $editDetail;
+		}
+		
+		echoRespnse(200, $response);
+		
+	});
 
 $app->get('/asalu/:id',function($id) use ($app){
 	$response = array();
