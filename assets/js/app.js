@@ -2594,7 +2594,8 @@ app.controller('chitiCtrl', function($route, $scope, $rootScope, $routeParams, $
 
 
     $scope.plusNotes = function(ind){
-        if(ind >= 0){
+        if(ind > 0){
+            console.log($scope.id,$scope.getasalu[ind-1].id);
             filter = {"action" : "plus","chiti":$scope.id,"asaluid":$scope.getasalu[ind-1].id}
             Data.put('multiupdatenotes',filter).then(function(results){ 
                 $scope.response = results.response 
@@ -4684,35 +4685,44 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
     $scope.getnotes = function(arr,ind){
         // console.log(arr);
         if(arr && arr.tYpe == 5){
-            var note = 0; note1 = 0;days = 100;
+            var perday = 0; note = 0; note1 = 0;days = 100;matched = false;
             (arr.cid == 259)? days = 400:"";
-            var perday = Number(arr.chitiamount)/days;
             for(d=0;d<$scope.asalulist.length;d++){
+                perday = Number(arr.chitiamount)/days;
                 if(arr.cid == $scope.asalulist[d].chiti){
+                    matched = true;
+                    (arr.cid == 413)?console.log($scope.asalulist[d].amount):"";
                     // (arr.cid == 259)?console.log($scope.asalulist[d].amount,'/',perday, (Number($scope.asalulist[d].amount) / Number(perday)) + 1):"";
                     if($scope.asalulist[d].amount > 0){
                         note = (Number($scope.asalulist[d].amount) / Number(perday)) + 1;
                     }else if($scope.asalulist[d].amount = 0){
+                    (arr.cid == 413)?console.log($scope.asalulist[d].amount):"";
                         note = 1;
                     }
                     // (arr.cid == 259)?console.log(note):"";
-                    note1 = Number(arr.amt)/Number(perday);
+                    // note1 = Number(arr.amt)/Number(perday);
                     // (arr.cid == 259)?console.log(note1):"";
                     // console.log(note1);
-                    if(note1 == 1){
-                        $scope.dailyarr[ind].note1 = note;
-                        $scope.dailyarr[ind].color = ($scope.dailyarr[ind].note != note)?"danger":"";
-                    }else if(note1 > 1 && note1 <= 2){
-                        $scope.dailyarr[ind].note1 = note + ',' + (note + 1);
-                        $scope.dailyarr[ind].color = ($scope.dailyarr[ind].note != $scope.dailyarr[ind].note1)?"danger":"";
-                    }else if(note1 > 2){
-                        $scope.dailyarr[ind].note1 = note + '-' + (note + note1 - 1);
-                        $scope.dailyarr[ind].color = ($scope.dailyarr[ind].note != $scope.dailyarr[ind].note1)?"danger":"";
-                    }
+                    
                     break;
                 }
             }
-            // console.log($scope.asalulist);
+            if(!matched){
+                note = 1;
+            }
+            note1 = Number(arr.amt)/Number(perday);
+            (arr.cid == 413)?console.log("note",note,note1):"";
+            (arr.cid == 413)?console.log(Number(arr.amt)/Number(perday)):"";
+            if(note1 == 1){
+                $scope.dailyarr[ind].note1 = note;
+                $scope.dailyarr[ind].color = ($scope.dailyarr[ind].note != note)?"danger":"";
+            }else if(note1 > 1 && note1 <= 2){
+                $scope.dailyarr[ind].note1 = note + ',' + (note + 1);
+                $scope.dailyarr[ind].color = ($scope.dailyarr[ind].note != $scope.dailyarr[ind].note1)?"danger":"";
+            }else if(note1 > 2){
+                $scope.dailyarr[ind].note1 = note + '-' + (note + note1 - 1);
+                $scope.dailyarr[ind].color = ($scope.dailyarr[ind].note != $scope.dailyarr[ind].note1)?"danger":"";
+            }
         }
     }
 
@@ -4723,7 +4733,6 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
         if(notesarr && notesarr.length){
             for(i=0;i<notesarr.length;i++){
                 var line1 = ""; line2 = "";
-                var linetemp = "";linetemp1="";tempword="";
                 var brtxt1 = []; brtxt2 = [];res1 = {}; res2 = {};
                 finaltemp = {}
                 if(notesarr[i].indexOf('-') >= 0){
@@ -4765,25 +4774,25 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
                 }else{
                     $scope.errentries.push(notesarr[i]);
                 }
-                var tmp = {};
-                tmp = finaltemp.customername.split(' ');
+                // var tmp = {};
+                // tmp = finaltemp.customername.split(' ');
 
                 //finding chiti code
-                tempword = "";
+                // tempword = "";
                 //storing word that is inside () in customername
-                tempword = finaltemp.customername.slice(finaltemp.customername.indexOf('(')+1 ,finaltemp.customername.indexOf(')'));
-                if(finaltemp.customername.indexOf('(') >= 0){
-                   if(isNaN(tempword)){ //if the 1st bracket has hami name
-                        tempword = finaltemp.customername.slice(finaltemp.customername.indexOf(')') + 1);
-                        if(tempword.indexOf('(') >= 0 && !isNaN(tempword.slice(tempword.indexOf('(')+1,tempword.indexOf(')')))){ //finding that if 2nd () is there and its integer or not
-                            // finaltemp.chiticode = tempword.slice(tempword.indexOf('(')+1,tempword.indexOf(')'));
-                        }
-                    }else{ //if the 1st bracket has chiti code
-                        // finaltemp.chiticode = tempword;
-                    }
-                }else{
-                    // finaltemp.chiticode = "";
-                }
+                // tempword = finaltemp.customername.slice(finaltemp.customername.indexOf('(')+1 ,finaltemp.customername.indexOf(')'));
+                // if(finaltemp.customername.indexOf('(') >= 0){
+                //    if(isNaN(tempword)){ //if the 1st bracket has hami name
+                //         tempword = finaltemp.customername.slice(finaltemp.customername.indexOf(')') + 1);
+                //         if(tempword.indexOf('(') >= 0 && !isNaN(tempword.slice(tempword.indexOf('(')+1,tempword.indexOf(')')))){ //finding that if 2nd () is there and its integer or not
+                //             // finaltemp.chiticode = tempword.slice(tempword.indexOf('(')+1,tempword.indexOf(')'));
+                //         }
+                //     }else{ //if the 1st bracket has chiti code
+                //         // finaltemp.chiticode = tempword;
+                //     }
+                // }else{
+                //     // finaltemp.chiticode = "";
+                // }
                 
                 // var temp = notesarr[i];
                 //1st took customer names

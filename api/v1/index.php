@@ -2649,6 +2649,10 @@ $app->put('/asalu/:id',function($id) use ($app){
 		$action = putParam($r,"action");
 		$chiti = putParam($r,"chiti");
 		$asaluid = putParam($r,"asaluid");
+		$initnote = "";$matchedi = 0;$prevnote = 0;
+		$days = 100;
+		$editedEntries = array();
+
 
 		$db= new DbHandler();
 		$getdata =array();
@@ -2668,41 +2672,88 @@ $app->put('/asalu/:id',function($id) use ($app){
 		$asaluDetail = call_user_func_array(array($db,'getasalu'),$getdata);
 		if(sizeof($asaluDetail)>0){
 			for($j=0;$j<sizeof($asaluDetail);$j++){
-				if($asaluDetail[$j].id == $asaluid){
+				if($asaluDetail[$j]["id"] == $asaluid){
+					$matchedi = $j;
+					if(strpos($asaluDetail[$j]["note"], ',')){
+						echo "<--- came in prevcomma".$prevnote."---->";
+						$temparr = explode(",",$asaluDetail[$j]["note"]);
+						$prevnote = $temparr[sizeof($temparr) - 1];
+					}else if(strpos($asaluDetail[$j]["note"], '-')){
+						echo "<--- came in prevdash".$prevnote."---->";
+						$temparr = explode(",",$asaluDetail[$j]["note"]);
+						$prevnote = $temparr[sizeof($temparr) - 1];
+					}else if(!is_nan($prevnote)){
+						echo "<--- came in prevnumerix".$prevnote."---->";
+						$prevnote = $asaluDetail[$j]["note"];
+					}
+					// break;
+				}
+				
+
+				if($prevnote && $matchedi > $j){					
+
+
+
+					if(strpos($asaluDetail[$j]["note"], ',')){
+						echo "<--- came in comma".$asaluDetail[$j]["note"]."---->";
+						$temparr = explode(",",$asaluDetail[$j]["note"]);
+						$initnote = $temparr[sizeof($temparr) - 1];
+					}else if(strpos($asaluDetail[$j]["note"], '-')){
+						echo "<--- came in dash".$asaluDetail[$j]["note"]."---->";
+						$temparr = explode(",",$asaluDetail[$j]["note"]);
+						$initnote = $temparr[sizeof($temparr) - 1];
+					}else if(!is_nan($asaluDetail[$j]["note"])){
+						echo "<--- came in numerix".$asaluDetail[$j]["note"]."---->";
+						$initnote = $asaluDetail[$j]["note"];
+					}
+
+					($asaluDetail[$j]["chiti"] == 259)?$days = 400 : "";
+					$perday = $asaluDetail[$j]["amount"]/$days;
+					echo "perday".$perday;
+					if($perday == 1){
+						$initnote += 1;
+					}else if($perday > 1 && $perday <= 2){
+						$initnote = $initnote + ',' + ($initnote + 1);
+					}else if($perday > 2){
+						$initnote = $initnote + '-' + ($initnote + $perday);
+					}
+				}
+
+				echo "<--- came in end".$initnote."---->";
 					
-					break;
-				}
-			}
-
-			$params = $db->putFunctionParam("asalu");
-			$updateField = array();
-			$updateField["id"]= $id ;
-			$putdata =array();
-			array_push($putdata,$updateField);
-			for($i=0;$i<sizeof($params);$i++){
-				if(putParam($r,$params[$i])){
-					array_push($putdata,putParam($r,$params[$i]));
-				}else{
+					$params = $db->putFunctionParam("asalu");
+					$updateField = array();
+					$updateField["id"]= $asaluDetail[$j]["id"];
+					$putdata =array();
+					array_push($putdata,$updateField);
+					for($i=0;$i<sizeof($params);$i++){
+						if(putParam($r,$params[$i])){
+							array_push($putdata,putParam($r,$params[$i]));
+						}else{
+							array_push($putdata,"");
+						}
+					}
 					array_push($putdata,"");
-				}
-			}
-			array_push($putdata,"");
-		}
-		$editDetail = call_user_func_array(array($db,'editasalu'),$putdata);
 
-		if($editDetail["status"] == SUCCESS){
-			$response["error"] = false;
-			$response["status"] = "success";
-			$response["id"] = $id;
-			$response["message"] = "Woot! , successfully edited Asalu information";
-		}else{
-			$response["error"] = "true";
-			$response["status"] = "success";
-			$response ["message"] = "Oops! An error occured while editing Asalu information";
-			$response["err"] = $editDetail;
+				// }
+			}
+
 		}
+		// $editDetail = call_user_func_array(array($db,'editasalu'),$putdata);
+
+		// if($editDetail["status"] == SUCCESS){
+		// 	$response["error"] = false;
+		// 	$response["status"] = "success";
+		// 	$response["id"] = $id;
+		// 	$response["message"] = "Woot! , successfully edited Asalu information";
+		// }else{
+		// 	$response["error"] = "true";
+		// 	$response["status"] = "success";
+		// 	$response ["message"] = "Oops! An error occured while editing Asalu information";
+		// 	$response["err"] = $editDetail;
+		// }
 		
-		echoRespnse(200, $response);
+		// echoRespnse(200, $response);
 		
 	});
 
