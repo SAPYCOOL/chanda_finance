@@ -2598,7 +2598,10 @@ app.controller('chitiCtrl', function($route, $scope, $rootScope, $routeParams, $
             console.log($scope.id,$scope.getasalu[ind-1].id);
             filter = {"action" : "plus","chiti":$scope.id,"asaluid":$scope.getasalu[ind-1].id}
             Data.put('multiupdatenotes',filter).then(function(results){ 
-                $scope.response = results.response 
+                Data.toast(results);
+                if(results.status == "success"){
+                    $scope.init();
+                }
             });
             // if($scope.getasalu[ind-1].note.indexOf(',')){
 
