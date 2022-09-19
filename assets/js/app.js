@@ -4680,6 +4680,7 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
     $scope.init = function(){
         focusonTime("note",200);
         $scope.disp = 0;
+        $scope.selected
         $scope.dailyarr = {};
         $scope.lastind = -1;
     }
@@ -4689,22 +4690,22 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
         // console.log(arr);
         if(arr && arr.tYpe == 5){
             var perday = 0; note = 0; note1 = 0;days = 100;matched = false;
-            (arr.cid == 259)? days = 400:"";
+            (arr.cid == 259 )? days = 400:"";
             for(d=0;d<$scope.asalulist.length;d++){
                 perday = Number(arr.chitiamount)/days;
                 if(arr.cid == $scope.asalulist[d].chiti){
                     matched = true;
-                    (arr.cid == 413)?console.log($scope.asalulist[d].amount):"";
-                    // (arr.cid == 259)?console.log($scope.asalulist[d].amount,'/',perday, (Number($scope.asalulist[d].amount) / Number(perday)) + 1):"";
+                    // (arr.cid == 377)?console.log($scope.asalulist[d].amount):"";
+                    // (arr.cid == 377)?console.log($scope.asalulist[d].amount,'/',perday, (Number($scope.asalulist[d].amount) / Number(perday)) + 1):"";
                     if($scope.asalulist[d].amount > 0){
                         note = (Number($scope.asalulist[d].amount) / Number(perday)) + 1;
                     }else if($scope.asalulist[d].amount = 0){
-                    (arr.cid == 413)?console.log($scope.asalulist[d].amount):"";
+                    // (arr.cid == 413)?console.log($scope.asalulist[d].amount):"";
                         note = 1;
                     }
-                    // (arr.cid == 259)?console.log(note):"";
+                    // (arr.cid == 377)?console.log(note):"";
                     // note1 = Number(arr.amt)/Number(perday);
-                    // (arr.cid == 259)?console.log(note1):"";
+                    // (arr.cid == 377)?console.log(note1):"";
                     // console.log(note1);
                     
                     break;
@@ -4713,10 +4714,11 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
             if(!matched){
                 note = 1;
             }
+            // (arr.cid == 377)?console.log(Number(arr.amt),"/",Number(perday)):"";
             note1 = Number(arr.amt)/Number(perday);
-            (arr.cid == 413)?console.log("note",note,note1):"";
-            (arr.cid == 413)?console.log(Number(arr.amt)/Number(perday)):"";
-            if(note1 == 1){
+            // (arr.cid == 377)?console.log("note",note,note1):"";
+            // (arr.cid == 377)?console.log(Number(arr.amt)/Number(perday)):"";
+            if(note1 > 0 && note1 <= 1){
                 $scope.dailyarr[ind].note1 = note;
                 $scope.dailyarr[ind].color = ($scope.dailyarr[ind].note != note)?"danger":"";
             }else if(note1 > 1 && note1 <= 2){
@@ -4752,12 +4754,15 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
                     }else{
 
                     }
+                    // (finaltemp.cid==376)?console.log(brtxt2):"";
                     if(brtxt2 && brtxt2.length){
                         res2 = singlenum(brtxt2);
                         if(res2.num == 1){
                             finaltemp.note = res2.number[0];
                         }
+                        // (finaltemp.cid==376)?console.log(line2.slice(line2.indexOf('-')+1,line2.indexOf('('))):"";
                         finaltemp.amt = (line2.slice(line2.indexOf('-')+1,line2.indexOf('('))).replace(/,/g, '');
+                        // (finaltemp.cid==376)?console.log(finaltemp.amt):"";
                         if(res2.nan.length){
                             for(f=0;f<res2.nan.length;f++){
                                 if(pmnames(res2.nan[f])){
@@ -4766,8 +4771,10 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
                             }
                         }
                     }else{
-                        if(!isNaN((line2.slice(line2.indexOf('-')+1)).replace(/, /g, ''))){
-                            finaltemp.amt = (line2.slice(line2.indexOf('-')+1)).replace(/, /g, '');
+                        // (finaltemp.cid==376)?console.log(!isNaN((line2.slice(line2.indexOf('-')+1)).replace(/,/g, '')),(line2.slice(line2.indexOf('-')+1)).replace(/,/g, '')):"";
+                        if(!isNaN((line2.slice(line2.indexOf('-')+1)).replace(/,/g, ''))){
+                            finaltemp.amt = (line2.slice(line2.indexOf('-')+1)).replace(/,/g, '');
+                            // (finaltemp.cid==376)?console.log((finaltemp.amt)):"";
                         }
                         finaltemp.note = "";
                         finaltemp.pmmode = "";
@@ -4843,7 +4850,7 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
                 var filter1 = {chiti:{"op":"In",value:cidarr.toString()},group_by:"a.chiti",fields:"sum(a.amount) as amount" }
                 Data.get("asalu",filter1).then(function(results){
                     $scope.asalulist = results.asalu;
-                    console.log($scope.chitilist);
+                    // console.log($scope.chitilist);
                     if($scope.chitilist && $scope.chitilist.length){
                         for(i=0;i<$scope.dailyarr.length;i++){
                             for(j=0;j<$scope.chitilist.length;j++){
@@ -4882,7 +4889,7 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
         console.log($scope.dailyarr);
         $scope.submitted = 1;
     
-        if($scope.dailyarr.length>0){
+        if($scope.dailyarr.length>0 && $scope.daily.date){
             $scope.asalu = [];
             for(i=0;i<$scope.dailyarr.length;i++){
                 var tmp = {};
@@ -4895,20 +4902,21 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
                 $scope.asalu.push(tmp);
             }
             console.log($scope.asalu);
-            // Data.post("dailyCollection",{"asalu":$scope.asalu}).then(function(results){
-            //     Data.toast(results);
-            //     // $scope.dresponse = results.message;
-            //     if(results.status == "success"){
-            //         $scope.asalu = [];
-            //         $scope.init();
-            //     }
-            // });
+            Data.post("dailyCollection",{"asalu":$scope.asalu}).then(function(results){
+                Data.toast(results);
+                // $scope.dresponse = results.message;
+                if(results.status == "success"){
+                    $scope.asalu = [];
+                    $scope.init();
+                }
+            });
         }
     }
 
 
-    $scope.showLast3 = function(cid){
+    $scope.showLast3 = function(cid,cus){
         $scope.disp = 1;
+        $scope.selected = {chiti:cid,customername : cus}
         Data.get('asalu',{chiti:cid,sort_by : "a.date",sort_order : "desc",limit:3}).then(function(results){ 
             $scope.lasttrans = results.asalu;
             sortarrbydate($scope.lasttrans)

@@ -2679,105 +2679,106 @@ $app->put('/asalu/:id',function($id) use ($app){
 				}
 				
 					// echo = 
-				if($prevnote && $j > $matchedi){
-					// echo "prevnote bfre err".$prevnote; //18,19
-					// echo " 1stnote ".$asaluDetail[$j]["note"];//21
-					
-					if(strpos($prevnote, ',')){
-						$temparr = explode(",",$prevnote);
-						$prevnote = $temparr[sizeof($temparr) - 1];
-						// echo "<--- came in prevcomma ".$prevnote."---->";
-					}else if(strpos($prevnote, '-')){
-						$temparr = explode(",",$prevnote);
-						$prevnote = $temparr[sizeof($temparr) - 1];
-						// echo "<--- came in prevdash".$prevnote."---->";
-					}
-					// else if(!is_nan($prevnote)){
-					// 	echo "<--- came in prevnumerix".$prevnote."---->";
-					// 	$prevnote = $asaluDetail[$j]["note"];
-					// }
-					
-					
-            // Data.toast(results);
-					// echo "<--- came in prev final ".$prevnote."-----curr ". $currnote . "-->";
-					
-
-					($asaluDetail[$j]["chiti"] == 259)?$days = 400 : "";
-					$perday = $asaluDetail[$j]["amount"]/$days;
-					// if($j >= $matchedi){
-					// 	echo "perday".$perday;
-					// }
-					$prevnote = intval($prevnote) + 1;
-					if($perday == 1){
-						$currnote = $prevnote;
-						// echo "<--- came in 1".$prevnote."---->";
-					}else if($perday > 1 && $perday <= 2){// 
-						// $initnote = $prevnote;
-						// $prevnote = strval($prevnote);
-						$currnote = ($prevnote) . ',' . (intval($prevnote) + 1);
-						// echo "<--- came in 2".$prevnote."---->";
-					}else if($perday > 2){
-						// $initnote = $prevnote;
-						// $prevnote = strval($prevnote);
-						$currnote = ($prevnote) . '-'  . ($prevnote + $perday);
-						// echo "<--- came in 3".$prevnote."---->";
-					}
-				}
-				// if($matchedi && $j >= $matchedi){
-					// echo "<--- came in end".$prevnote."--curr ". $currnote . "-->";
-					// }
-					($currnote)?$prevnote = $currnote:"";
-					// echo "<--- came changed".$prevnote."--curr ". $currnote . "-->";
-					
-					$params = $db->putFunctionParam("asalu");
-					$updateField = array();
-					$updateField["id"]= $asaluDetail[$j]["id"];
-					$putdata =array();
-					array_push($putdata,$updateField);
-					for($i=0;$i<sizeof($params);$i++){
-						if($params[$i] == "note"){
-							array_push($putdata,$currnote);
-						}else{
-							array_push($putdata,"");
+					if($prevnote && $j > $matchedi){
+						// echo "prevnote bfre err".$prevnote; //18,19
+						// echo " 1stnote ".$asaluDetail[$j]["note"];//21
+						
+						if(strpos($prevnote, ',')){
+							$temparr = explode(",",$prevnote);
+							$prevnote = $temparr[sizeof($temparr) - 1];
+							// echo "<--- came in prevcomma ".$prevnote."---->";
+						}else if(strpos($prevnote, '-')){
+							$temparr = explode(",",$prevnote);
+							$prevnote = $temparr[sizeof($temparr) - 1];
+							// echo "<--- came in prevdash".$prevnote."---->";
 						}
-					}
-					array_push($putdata,"");
+						// else if(!is_nan($prevnote)){
+						// 	echo "<--- came in prevnumerix".$prevnote."---->";
+						// 	$prevnote = $asaluDetail[$j]["note"];
+						// }
+						
+						
+						// Data.toast(results);
+						// echo "<--- came in prev final ".$prevnote."-----curr ". $currnote . "-->";
+						
 
-					$editDetail = call_user_func_array(array($db,'editasalu'),$putdata);
-					if($editDetail["status"] == SUCCESS){
-						$params = $db->putFunctionParam("received");
-						$updateField = array();
-						$updateField["asaluid"]= $asaluDetail[$j]["id"];
-						$putdata =array();
-						array_push($putdata,$updateField);
-						for($i=0;$i<sizeof($params);$i++){
-							if($params[$i] == "note"){
-								array_push($putdata,$currnote);
-							}else{
-								array_push($putdata,"");
+						($asaluDetail[$j]["chiti"] == 259)?$days = 400 : "";
+						$perday = $asaluDetail[$j]["amount"]/$days;
+						// if($j >= $matchedi){
+						// 	echo "perday".$perday;
+						// }
+						$prevnote = intval($prevnote) + 1;
+						if($perday == 1){
+							$currnote = $prevnote;
+							// echo "<--- came in 1".$prevnote."---->";
+						}else if($perday > 1 && $perday <= 2){// 
+							// $initnote = $prevnote;
+							// $prevnote = strval($prevnote);
+							$currnote = ($prevnote) . ',' . (intval($prevnote) + 1);
+							// echo "<--- came in 2".$prevnote."---->";
+						}else if($perday > 2){
+							// $initnote = $prevnote;
+							// $prevnote = strval($prevnote);
+							$currnote = ($prevnote) . '-'  . ($prevnote + $perday);
+							// echo "<--- came in 3".$prevnote."---->";
+						}
+						// if($matchedi && $j >= $matchedi){
+							// echo "<--- came in end".$prevnote."--curr ". $currnote . "-->";
+							// }
+							($currnote)?$prevnote = $currnote:"";
+							// echo "<--- came changed".$prevnote."--curr ". $currnote . "-->";
+							
+							$params = $db->putFunctionParam("asalu");
+							$updateField = array();
+							$updateField["id"]= $asaluDetail[$j]["id"];
+							$putdata =array();
+							array_push($putdata,$updateField);
+							for($i=0;$i<sizeof($params);$i++){
+								if($params[$i] == "note"){
+									array_push($putdata,$currnote);
+								}else{
+									array_push($putdata,"");
+								}
 							}
-						}
-						array_push($putdata,"");
+							array_push($putdata,"");
 
-						$editRcvdDetail = call_user_func_array(array($db,'editreceived'),$putdata);
-
-						if($editRcvdDetail["status"] == SUCCESS){
-							array_push($editedEntries,$asaluDetail[$j]["id"]);
+						$editDetail = call_user_func_array(array($db,'editasalu'),$putdata);
+						if($editDetail["status"] == SUCCESS){
+							$params = $db->putFunctionParam("received");
+							$updateField = array();
+							$updateField["asaluid"]= $asaluDetail[$j]["id"];
+							$putdata =array();
+							array_push($putdata,$updateField);
+							for($i=0;$i<sizeof($params);$i++){
+								if($params[$i] == "note"){
+									array_push($putdata,$currnote);
+								}else{
+									array_push($putdata,"");
+								}
+							}
+							array_push($putdata,"");
+							
+							$editRcvdDetail = call_user_func_array(array($db,'editreceived'),$putdata);
+							
+							if($editRcvdDetail["status"] == SUCCESS){
+								array_push($editedEntries,$asaluDetail[$j]["id"]);
+								// $editRcvdDetail = 
+							}
+							$response["error"] = false;
+							$response["status"] = "success";
+							$response["editedEntries"] = $editedEntries;
+							$response["message"] = "Woot! , successfully edited Asalu information";
+						}else{
+							$response["error"] = "true";
+							$response["status"] = "success";
+							$response ["message"] = "Oops! An error occured while editing Asalu information";
+							$response["err"] = $editDetail;
 						}
-						$response["error"] = false;
-						$response["status"] = "success";
-						$response["editedEntries"] = $editedEntries;
-						$response["message"] = "Woot! , successfully edited Asalu information";
-					}else{
-						$response["error"] = "true";
-						$response["status"] = "success";
-						$response ["message"] = "Oops! An error occured while editing Asalu information";
-						$response["err"] = $editDetail;
+						// }
 					}
-				// }
 			}
 		}
-		
+			
 		echoRespnse(200, $response);
 		
 	});

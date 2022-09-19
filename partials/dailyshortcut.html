@@ -37,7 +37,7 @@
                 </div>
             </div>
             <div ng-show="disp" class="fixed-content" >
-                <center><h1>{{lasttrans[0].customername}}</h1></center>
+                <center><h1>{{selected.customername}}</h1></center>
                 <table class="table table-responsive table-bordered table-condensed table-hover ">
                     <thead>
                         <tr>
@@ -57,7 +57,7 @@
                     </tbody>
                 </table>
                 <center>
-                    <button class='btn btn-primary'><a href="#/chiti/{{lasttrans[0].chiti}}" target="_blank" style="color:white;">Show chiti</a> </button>
+                    <button class='btn btn-primary'><a href="#/chiti/{{selected.chiti}}" target="_blank" style="color:white;">Show chiti</a> </button>
                     <button class='btn btn-primary' ng-click="disp = 0" >Back</button>
                 </center>
             </div>
@@ -90,7 +90,7 @@
                         </td>
                         <td>{{d.pmmode}}</td>
                         <td>
-                            <button ng-click="showLast3(d.cid)" class="btn btn-primary" >Last 3 Details</button>
+                            <button ng-click="showLast3(d.cid,d.customername)" class="btn btn-primary" >Last 3 Details</button>
                         </td>
                         <td> 
                             <button class='btn btn-primary' ng-click='editnote1($index)'> <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
