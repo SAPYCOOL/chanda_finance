@@ -2642,6 +2642,91 @@ $app->put('/asalu/:id',function($id) use ($app){
 });
 
 
+$app->delete('/asalu/:id',function($id) use ($app){
+	$r= json_decode($app->request->getBody());
+	$db= new DbHandler();
+	$getdata =array();
+	$params = $db->getFunctionParam("asalu");
+	for($i=0;$i<sizeof($params);$i++){
+		if($params[$i]== "id"){
+			array_push($getdata,$id);
+		}else{
+			array_push($getdata,"");
+		}
+	}
+
+	$asaluDetail = call_user_func_array(array($db,'getasalu'),$getdata);
+	// echo json_encode($asaluDetail[0]);
+	if(sizeof($asaluDetail)>0){
+		$params = $db->putFunctionParam("asalu");
+		$updateField = array();
+		$updateField["id"]= $id ;
+		$putdata =array();
+		array_push($putdata,$updateField);
+		for($i=0;$i<sizeof($params);$i++){
+			array_push($putdata,"");
+		}
+		array_push($putdata,1);
+	
+		$editDetail = call_user_func_array(array($db,'editasalu'),$putdata);
+
+		if($editDetail["status"] == SUCCESS){
+			$getdata =array();
+			$params = $db->getFunctionParam("receivedamount");
+			for($i=0;$i<sizeof($params);$i++){
+				if($params[$i]== "asaluid"){
+					array_push($getdata,$id);
+				}else{
+					array_push($getdata,"");
+				}
+			}
+
+			$receivedDetail = call_user_func_array(array($db,'getreceivedamount'),$getdata);
+			// echo json_encode($receivedDetail);
+			if(sizeof($receivedDetail)>0){
+				$params = $db->putFunctionParam("received");
+				$updateField = array();
+				$updateField["id"]= $id ;
+				$putdata =array();
+				array_push($putdata,$updateField);
+				for($i=0;$i<sizeof($params);$i++){
+					array_push($putdata,"");
+				}
+				array_push($putdata,1);
+	
+				$editRcvdDetail = call_user_func_array(array($db,'editreceived'),$putdata);
+
+				if($editRcvdDetail["status"] == SUCCESS){
+					$response["error"] = false;
+					$response["status"] = "success";
+					$response["id"] = $id;
+					$response["message"] = "Woot! , successfully Deleted Asalu information";
+				}else{
+					$response["error"] = "true";
+					$response["status"] = "success";
+					$response ["message"] = "Oops! An error occured while Deleting Asalu information";
+					$response["err"] = $editDetail;
+				}
+			}else{
+				$response["error"] = true;
+				$response["status"] ="error";
+				$response["message"] = "No Received amount entry found with given chiti";
+				echoRespnse(201, $response);
+				return;
+			}
+		}
+	}else{
+		$response["error"] = true;
+		$response["status"] ="error";
+		$response["message"] = "No collection found with given chiti";
+		echoRespnse(201, $response);
+		return;
+	}
+		echoRespnse(200, $response);
+	// }
+});
+
+
 
 	$app->put('/multiupdatenotes',function() use ($app){
 		$r= json_decode($app->request->getBody());
@@ -2649,8 +2734,10 @@ $app->put('/asalu/:id',function($id) use ($app){
 		$action = putParam($r,"action");
 		$chiti = putParam($r,"chiti");
 		$asaluid = putParam($r,"asaluid");
+		$totalamount = putParam($r,"totalamount");
+
 		$currnote = "";$matchedi = 0;$prevnote = 0;
-		$days = 100;
+		$days = 100;$paiddays = 0;
 		$editedEntries = array();
 
 
@@ -2670,6 +2757,7 @@ $app->put('/asalu/:id',function($id) use ($app){
 		}
 
 		$asaluDetail = call_user_func_array(array($db,'getasalu'),$getdata);
+		// echo json_encode($asaluDetail);
 		if(sizeof($asaluDetail)>0){
 			for($j=0;$j<sizeof($asaluDetail);$j++){
 				if($asaluDetail[$j]["id"] == $asaluid){
@@ -2688,7 +2776,7 @@ $app->put('/asalu/:id',function($id) use ($app){
 							$prevnote = $temparr[sizeof($temparr) - 1];
 							// echo "<--- came in prevcomma ".$prevnote."---->";
 						}else if(strpos($prevnote, '-')){
-							$temparr = explode(",",$prevnote);
+							$temparr = explode("-",$prevnote);
 							$prevnote = $temparr[sizeof($temparr) - 1];
 							// echo "<--- came in prevdash".$prevnote."---->";
 						}
@@ -2703,23 +2791,26 @@ $app->put('/asalu/:id',function($id) use ($app){
 						
 
 						($asaluDetail[$j]["chiti"] == 259)?$days = 400 : "";
-						$perday = $asaluDetail[$j]["amount"]/$days;
+							// echo $totalamount;
+						$perday = intval($totalamount)/$days;
+						$paiddays = intval($asaluDetail[$j]["amount"]) / $perday;
 						// if($j >= $matchedi){
-						// 	echo "perday".$perday;
+						// 	echo "perday".$perday."paiddays".$paiddays;
 						// }
+						
 						$prevnote = intval($prevnote) + 1;
-						if($perday == 1){
+						if($paiddays == 1){
 							$currnote = $prevnote;
 							// echo "<--- came in 1".$prevnote."---->";
-						}else if($perday > 1 && $perday <= 2){// 
+						}else if($paiddays > 1 && $paiddays <= 2){// 
 							// $initnote = $prevnote;
 							// $prevnote = strval($prevnote);
 							$currnote = ($prevnote) . ',' . (intval($prevnote) + 1);
 							// echo "<--- came in 2".$prevnote."---->";
-						}else if($perday > 2){
+						}else if($paiddays > 2){
 							// $initnote = $prevnote;
 							// $prevnote = strval($prevnote);
-							$currnote = ($prevnote) . '-'  . ($prevnote + $perday);
+							$currnote = ($prevnote) . '-'  . ($prevnote + $paiddays - 1);
 							// echo "<--- came in 3".$prevnote."---->";
 						}
 						// if($matchedi && $j >= $matchedi){

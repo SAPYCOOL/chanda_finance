@@ -989,7 +989,8 @@ public function editcustomer($update,$firstname,$lastname,$phoneno,$hami,$ishami
 	}
 
 	public function editreceived($update,$customer,$amount,$rcvddate,$asalu,$asaluid,$chiti,$colid,$note,$deleted){
-	
+					//putfunctionparams-> customer","amount","rcvddate","asalu","asaluid","chiti","colid","note");
+				// echo "deldetails->".$deleted;
 		$updated=date("Y-m-d H:i:s");
 		$parameter=array($customer,$amount,$rcvddate,$asalu,$asaluid,$chiti,$colid,$note,$deleted,$updated);
 		$sqlrows=array("customer=?","amount=?","rcvddate=?","asalu=?","asaluid=?","chiti=?","colid=?","note=?","deleted=?","updated=?",);//db
@@ -1007,9 +1008,9 @@ public function editcustomer($update,$firstname,$lastname,$phoneno,$hami,$ishami
 			}
 			
 			$whereSql = " where ".join(' and ',$updatedata);
-			
+			// echo "UPDATE  received SET ".$sql." ".$whereSql;
 			$stmtR= $this->putQuery("UPDATE  received SET ".$sql." ".$whereSql,$bind_string,$bind_param);
-
+			// echo "<----stmt ".$stmtR;
 	}
 
 	public function editasalu($update,$date,$customer,$amount,$chitiamount,$chiti,$note,$deleted){
@@ -1168,7 +1169,7 @@ public function editcustomer($update,$firstname,$lastname,$phoneno,$hami,$ishami
 			$groupSql = " group by ".$groupBy;
 		}*/
 		// echo "SELECT ".$fields." from  `chiti` a LEFT JOIN customers b on a.customer=b.id LEFT JOIN customers c on b.hami=c.id  ".$sql." ".$sortingSql."  ".$groupSql." ".$limitSql;
-	return	$this->getQuery("SELECT ".$fields." from  `chiti` a LEFT JOIN customers b on a.customer=b.id LEFT JOIN customers c on b.hami=c.id  ".$sql." ".$sortingSql."  ".$groupSql." ".$limitSql,$bind_string, $bind_param);
+		return	$this->getQuery("SELECT ".$fields." from  `chiti` a LEFT JOIN customers b on a.customer=b.id LEFT JOIN customers c on b.hami=c.id  ".$sql." ".$sortingSql."  ".$groupSql." ".$limitSql,$bind_string, $bind_param);
 		
 	}
  

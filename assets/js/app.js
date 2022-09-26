@@ -2594,9 +2594,9 @@ app.controller('chitiCtrl', function($route, $scope, $rootScope, $routeParams, $
 
 
     $scope.plusNotes = function(ind){
-        if(ind > 0){
+        if(ind > 0 && confirm("Are you sure! you want to change notes")){
             console.log($scope.id,$scope.getasalu[ind-1].id);
-            filter = {"action" : "plus","chiti":$scope.id,"asaluid":$scope.getasalu[ind-1].id}
+            filter = {"action" : "plus","chiti":$scope.id,"asaluid":$scope.getasalu[ind-1].id,"totalamount":$scope.chiti.chitiamount}
             Data.put('multiupdatenotes',filter).then(function(results){ 
                 Data.toast(results);
                 if(results.status == "success"){
@@ -2695,7 +2695,9 @@ $scope.clpen = function(){
                                 notes += " + " + $scope.notesrcvdamt[i].amount + "(" + dtt + ")" ; 
                             }
                         }
-    
+                        if(rcvdttl){
+                            notes += " = " + rcvdttl ; 
+                        }
                         if(notes){  
                             var datatemp = {notes:notes};
                             if(rcvdttl < colamt){
@@ -3281,13 +3283,19 @@ app.controller('editasaluCtrl',function($route,$scope,$rootScope,$routeParams,$l
             
         Data.get('asalu/'+ $scope.id).then(function(results){
             Data.toast(results);
-          $scope.asalu = results.asalu;
-          console.log($scope.asalu);
-            
+            $scope.asalu = results.asalu;
+            console.log($scope.asalu);      
         });
     }
     
     
+    $scope.deleteAsalu = function(){
+        if(confirm("Are you sure you want to delete the Asalu")){
+            Data.delete("asalu/"+$scope.id).then(function(results){
+                Data.toast(results);
+            });
+        }
+    }
     
     $scope.getchitilist = function(){
         Data.get('chiti').then(function(results){
@@ -4680,14 +4688,15 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
     $scope.init = function(){
         focusonTime("note",200);
         $scope.disp = 0;
-        $scope.selected
+        $scope.fulldisp = 0;
+        $scope.selected = {};
         $scope.dailyarr = {};
         $scope.lastind = -1;
     }
 
 
     $scope.getnotes = function(arr,ind){
-        // console.log(arr);
+        console.log(arr);
         if(arr && arr.tYpe == 5){
             var perday = 0; note = 0; note1 = 0;days = 100;matched = false;
             (arr.cid == 259 )? days = 400:"";
@@ -4706,7 +4715,7 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
                     // (arr.cid == 377)?console.log(note):"";
                     // note1 = Number(arr.amt)/Number(perday);
                     // (arr.cid == 377)?console.log(note1):"";
-                    // console.log(note1);
+                    console.log(note1);
                     
                     break;
                 }
@@ -4746,13 +4755,14 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
                     brtxt1 = txtbrackets(line1);
                     brtxt2 = txtbrackets(line2);
                     // console.log("pmmode",finaltemp.pmmode);
-                    if(brtxt1 && brtxt1.length){
+                    if(brtxt1 && brtxt1.length && brtxt1[0] != ""){
                         res1 = singlenum(brtxt1);
                         if(res1.num == 1){
                             finaltemp.cid = res1.number[0];
                         }
+                        // console.log(finaltemp,brtxt1,brtxt1.length,);
                     }else{
-
+                        alert("Didn't received Chiti ID");
                     }
                     // (finaltemp.cid==376)?console.log(brtxt2):"";
                     if(brtxt2 && brtxt2.length){
@@ -4854,11 +4864,13 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
                     if($scope.chitilist && $scope.chitilist.length){
                         for(i=0;i<$scope.dailyarr.length;i++){
                             for(j=0;j<$scope.chitilist.length;j++){
+                                console.log($scope.dailyarr[i],$scope.chitilist[j].id);
                                 if($scope.dailyarr[i].cid == $scope.chitilist[j].id){
                                     $scope.dailyarr[i].customer = $scope.chitilist[j].customer;
                                     $scope.dailyarr[i].tYpe = $scope.chitilist[j].tYpe;
                                     $scope.dailyarr[i].chitiamount = $scope.chitilist[j].chitiamount;
                                     // $scope.dailyarr[i].customer = $scope.chitilist[j].customer;
+                                    console.log($scope.dailyarr[i]);
                                     $scope.getnotes($scope.dailyarr[i],i);
                                     break;
                                 }
