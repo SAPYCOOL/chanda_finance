@@ -4692,6 +4692,7 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
         $scope.selected = {};
         $scope.dailyarr = {};
         $scope.lastind = -1;
+        $scope.daily = [];
     }
 
 
@@ -4742,7 +4743,9 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
 
     $scope.filterData = function(){
         $scope.dailyarr = [];
+        $scope.daildata = "";
         $scope.errentries = [];
+        $scope.errdata = "";
         var notesarr  = $scope.daily.note.split(/\r?\n/);cidarr = [];
         if(notesarr && notesarr.length){
             for(i=0;i<notesarr.length;i++){
@@ -4793,6 +4796,7 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
 
                 }else{
                     $scope.errentries.push(notesarr[i]);
+                    ($scope.errdata == "")?$scope.errdata = notesarr[i]: $scope.errdata += "\n" + notesarr[i];
                 }
                 // var tmp = {};
                 // tmp = finaltemp.customername.split(' ');
@@ -4851,8 +4855,9 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
                 // console.log("linetemp1-",linetemp1);
                 if(!isNaN(finaltemp.cid)){
                     cidarr.push(finaltemp.cid);
+                    $scope.dailyarr.push(finaltemp);
+                    ($scope.daildata == "")?$scope.daildata = notesarr[i]:$scope.daildata += "\n" + notesarr[i];
                 }
-                $scope.dailyarr.push(finaltemp);
             }
             var filter = {id:{"op":"In",value:cidarr.toString()}}
             Data.get("chiti",filter).then(function(results){
@@ -4895,6 +4900,10 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
         }else{
             $scope.lastind = ind;
         }
+    }
+
+    $scope.onLinkClick = function(idname){
+        onLinkClick(idname);
     }
 
     $scope.createDaily = function(){

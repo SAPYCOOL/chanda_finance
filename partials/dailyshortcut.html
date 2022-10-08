@@ -64,6 +64,7 @@
         </div>
         <div class="col-md-5" ng-show="dailyarr.length" >
             <button class='btn btn-primary' ng-click='fulldisp =! fulldisp'><span ng-show="!fulldisp">Show</span> <span ng-show="fulldisp">Hide</span> Full Details</button>
+            <button class='btn btn-primary' ng-click="onLinkClick('rawData')" >Show Raw Data</button>
             <button class='btn btn-primary' ng-click='createDaily()'>Submit</button>
             <table style="max-width:100%;white-space:nowrap;" class="table table-responsive table-bordered table-condensed table-hover ">
                 <thead>
@@ -103,4 +104,33 @@
     </div>
 
 
+    <div class="row" ng-show="errentries.length" >
+        <div class="col-md-4">
+            <textarea ng-show="dailyarr.length" name="note" id="note" ng-model="errdata" style="height: 600px;width:300px;" >
+                        
+            </textarea>
+            <div id="rawData">
+                <h3>Raw Data</h3>
+                <textarea ng-show="dailyarr.length" name="note11" id="note11" ng-model="daily.note" style="height: 600px;width:300px;" >
+                </textarea>
+            </div>
+            <!-- <textarea ng-model="daildata"  style="height: 600px;width:300px;" ></textarea> -->
+        </div>
+        <div class="col-md-8">
+            <table class="table table-bordered table-condensed table-hover table-responsive">
+                <thead>
+                    <tr>
+                        <th>S NO.</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="err in errentries">
+                        <td>{{$index + 1}}</td>
+                        <td>{{err}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

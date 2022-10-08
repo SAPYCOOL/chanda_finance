@@ -35,7 +35,10 @@ function changeDateSQLFormat(olddate){
     });
   }
 
-
+  function onLinkClick(idname) {
+    const element = document.getElementById(idname);
+    element.scrollIntoView();
+  }
   
   function sortarrasc(arr,param){
     // const points = [40, 100, 1, 5, 25, 10];
