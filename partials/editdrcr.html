@@ -47,23 +47,24 @@
                         </div>  
                          <div class="col-md-3">
                         <div class="form-group" >
-                        <label>Show in Daybook : </label>
-                        <select   ng-model="drcr.showdaybook" class="form-control">
-                        <option value="0" >Show/Hide</option>
-                        <option value="1">Show</option>
-                        <option value="2">Hide</option>
-                        </select>
+                            <label>Show in Daybook : </label>
+                            <select   ng-model="drcr.showdaybook" class="form-control">
+                                <option value="0" >Show/Hide</option>
+                                <option value="1">Show</option>
+                                <option value="2">Hide</option>
+                            </select>
                         </div>
                 </div> 
                          <div class="col-md-3">
                         <div class="form-group"ng-show="drcr.forint==0" >
-                        <label>Credit : </label>
+                        <label>Trans Type : </label>
                         <select  class= "form-control"  ng-model="drcr.creditexp" >
                             <option  value="0">Select Type</option>
                             <option  value="1">Credit</option>
                             <option value="2">Expenses</option>
                             <option value="3">P2C</option>
                             <option value="4">Chit Fund</option>
+                            <option value="5">Medical</option>
                         </select>
                         </div>
                 </div>

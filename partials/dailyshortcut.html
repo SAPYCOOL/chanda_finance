@@ -28,10 +28,13 @@
                         </div>   
                     </div> 
                     <div class="col-md-7" style="margin-left: 40px">
-                        <textarea name="note" id="note" ng-model="daily.note" style="height: 600px;width:300px;" >
+                        <!-- <textarea name="note" id="note" ng-model="daily.note" style="height: 600px;width:300px;" >
                     
-                        </textarea>
+                        </textarea> -->
+                        <textarea ng-show="disp || !dailyarr.length" name="note" id="note" ng-model="daily.note" style="height: 600px;width:300px;" >
                         
+                        </textarea>
+                        <textarea ng-show="dailyarr.length" ng-model="dailydata"  style="height: 600px;width:300px;" ></textarea>
                         <button class="btn btn-primary" ng-click="filterData()">Filter</button>
                     </div>
                 </div>

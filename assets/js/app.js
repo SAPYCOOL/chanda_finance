@@ -4743,7 +4743,7 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
 
     $scope.filterData = function(){
         $scope.dailyarr = [];
-        $scope.daildata = "";
+        $scope.dailydata = "";
         $scope.errentries = [];
         $scope.errdata = "";
         var notesarr  = $scope.daily.note.split(/\r?\n/);cidarr = [];
@@ -4856,7 +4856,7 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
                 if(!isNaN(finaltemp.cid)){
                     cidarr.push(finaltemp.cid);
                     $scope.dailyarr.push(finaltemp);
-                    ($scope.daildata == "")?$scope.daildata = notesarr[i]:$scope.daildata += "\n" + notesarr[i];
+                    ($scope.dailydata == "")?$scope.dailydata = notesarr[i]:$scope.dailydata += "\n" + notesarr[i];
                 }
             }
             var filter = {id:{"op":"In",value:cidarr.toString()}}
@@ -4928,7 +4928,7 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
                 // $scope.dresponse = results.message;
                 if(results.status == "success"){
                     $scope.asalu = [];
-                    $scope.init();
+                    // $scope.init();
                 }
             });
         }
