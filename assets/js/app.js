@@ -1976,7 +1976,57 @@ app.controller('getcustomersCtrl', function($route, $scope, $rootScope, $routePa
         $("#customermodal").modal('hide');
         Data.get('customers',$scope.filter).then(function(results){
             $scope.customers=results.customers;
-        })
+            if($scope.customers.length){
+                for(i=0;i<$scope.customers.length;i++){
+                    $scope.customers[i].isproof = 0;
+                    $scope.customers[i].proof = 0;
+                    if($scope.customers[i].aadhar == 1){
+                        $scope.customers[i].proof = "Aadhar"
+                        $scope.customers[i].isproof = 1;
+                    }
+                    if($scope.customers[i].passbook == 1){
+                        if($scope.customers[i].isproof == 1){
+                            $scope.customers[i].proof += " , Passbook";
+                        }else{
+                            $scope.customers[i].proof = "Passbook";
+                            $scope.customers[i].isproof = 1;
+                        }                
+                    }
+                    if($scope.customers[i].debitcard == 1){
+                        if($scope.customers[i].isproof == 1){
+                            $scope.customers[i].proof += " , Debit card";
+                        }else{
+                            $scope.customers[i].proof = "Debit card";
+                            $scope.customers[i].isproof = 1;
+                        }                
+                    }
+                    if($scope.customers[i].cheque == 1){
+                        if($scope.customers[i].isproof == 1){
+                            $scope.customers[i].proof += " , Cheque";
+                        }else{
+                            $scope.customers[i].proof = "Cheque";
+                            $scope.customers[i].isproof = 1;
+                        }                
+                    }
+                    if($scope.customers[i].pnote == 1){
+                        if($scope.customers[i].isproof == 1){
+                            $scope.customers[i].proof += " , Promissory Note";
+                        }else{
+                            $scope.customers[i].proof = "Promissory Note";
+                            $scope.customers[i].isproof = 1;
+                        }                
+                    }
+                    if($scope.customers[i].greensheet == 1){
+                        if($scope.customers[i].isproof == 1){
+                            $scope.customers[i].proof += " , Green sheet";
+                        }else{
+                            $scope.customers[i].proof = "Green sheet";
+                            $scope.customers[i].isproof = 1;
+                        }                
+                    }
+                }
+            }
+        });
         $scope.gethamilist();
     }
     $scope.getcustomerlist();
@@ -3231,11 +3281,17 @@ app.controller('editcustomerCtrl', function($route, $scope, $rootScope, $routePa
         $scope.proofchck = 0;
         Data.get('customer/'+$scope.id).then(function(results){
             $scope.Customer = results.customer;
-            // $scope.Customer.ishami = $scope.Customer.ishami.toString();
-            // $scope.Customer.proofchck = $scope.Customer.proofchck.toString();
-            if($scope.Customer.aadhar == 1 || $scope.Customer.passbook == 1 || $scope.Customer.debitcard == 1 || $scope.Customer.cheque == 1 || $scope.Customer.pnote == 1 || $scope.Customer.greensheet == 1){
-                $scope.proofchck = "1";
+            if($scope.Customer.aadhar == 1 || $scope.Customer.passbook == 1 ||$scope.Customer.debitcard == 1 || $scope.Customer.cheque == 1 || $scope.Customer.pnote == 1 || $scope.Customer.greensheet == 1){
+                $scope.Customer.proofchck = "1";
             }
+            $scope.Customer.ishami = $scope.Customer.ishami.toString();
+            $scope.Customer.aadhar = $scope.Customer.aadhar.toString();
+            $scope.Customer.passbook = $scope.Customer.passbook.toString();
+            $scope.Customer.debitcard = $scope.Customer.debitcard.toString();
+            $scope.Customer.cheque = $scope.Customer.cheque.toString();
+            $scope.Customer.pnote = $scope.Customer.pnote.toString();
+            $scope.Customer.greensheet = $scope.Customer.greensheet.toString();
+            $scope.Customer.forint = $scope.Customer.forint.toString();
             $scope.gethamilist();
 
         })

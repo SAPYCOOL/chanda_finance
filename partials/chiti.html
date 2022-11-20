@@ -23,6 +23,7 @@
           <button class="btn btn-primary" ng-show="sss==1" ng-click="sss=0">Chiti Details</button>
           <button class="btn btn-primary noprint" ng-click="print()">Print</button>
           <button class="btn btn-success" class="form-control noprint" data-toggle="modal" data-target="#datediffmodal" >Date Diff</button>
+          <button type="button" class="btn btn-primary" ng-show="collection.length > 8" ng-click="introws = !introws"><span ng-show="introws">Show All</span><span ng-show="!introws">Hide</span> Interest</button>
     </div>
     <div class="col-md-6 noprint" >
     <div class="text-right">
@@ -173,7 +174,7 @@
     </div>
     <!--chitiamount accordion-->
     
-    
+    <center><h2 style="color: red;margin-left: -250px;">INTEREST</h2></center>
     <table class="table table-responsive table-bordered table-condensed table-condensed table-hover ">
        <thead>
            <th>SNO.</th>
@@ -194,7 +195,7 @@
            <th class="noprint">Action</th>
        </thead>
        
-       <tr ng-repeat="c in collection" ng-class="chckparam(c.id)">
+       <tr ng-repeat="c in collection"  ng-show="!introws || introws && $index > (collection.length - 8)" ng-class="chckparam(c.id)">
            <td>{{$index+1}} </td>
            <td>{{changeDateUserFormat(c.date)}} </td>
            <td>{{c.amount}} </td>

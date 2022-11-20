@@ -15,6 +15,8 @@
          <th>Haami Phone No.</th>
          <th>Interest Rate</th>
          <th>ID</th>
+         <th>Proof</th>
+         <th>Note</th>
          <th>Edit</th>
       </tr>
       <tr ng-repeat = "c in customers ">    
@@ -25,6 +27,8 @@
          <td>{{c.HamiPhoneNo}}</td>
          <td>{{c.intrate}}</td>
          <td>{{c.id}} </td>
+         <td><span ng-show="c.isproof">{{c.proof}}</span></td>
+         <td>{{c.note}} </td>
          <td> <a ng-href="#/editcustomer/{{c.id}}"> <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a> </td>
 
       </tr>
