@@ -258,6 +258,149 @@ $app->get('/export1',  function() use ($app){
 });
 
 
+$app->post('/login', function() use ($app) {
+	
+    $r = json_decode($app->request->getBody());
+	verifyRequiredParams(array('name', 'password'));
+    
+    $response = array();
+    $db = new DbHandler();
+	  
+	$today = date("Y-m-d H:i:s");
+	$date = "2023-06-01 12:00:00";
+
+
+	if ($date > $today){
+		$name = postParams($app->request->post("name"));
+		$password = postParams($app->request->post("password"));
+		$user = $db->getOneRecord("select *,a.name as name,f.name as firm , b.name as type from users a LEFT JOIN role  b on a.role=b.id LEFT JOIN firm f on a.firm=f.id where a.name='$name'");
+		// echo json_encode($user);
+		if ($user != NULL){
+			if (passwordHash::check_password($user['password'], $password)) {
+				$response['status']    = "success";
+				$response['message']   = 'Logged in successfully.';
+				$response['name']      = $user['name'];
+				$response['uid']       = $user['uid'];
+				$response['createdAt'] = $user['created'];
+				
+				$today = date("Y-m-d");
+						
+				$lastbackupdate = $user["lastbackup"];
+				if ($lastbackupdate < $today) {
+					$params = $db->putFunctionParam("firm");
+					
+				exec('c:\WINDOWS\system32\cmd.exe /c START F:\xampp\htdocs\applications\Finance_2.2\backup.bat');
+				$getdata = array();
+				
+				for($i=0;$i<sizeof($params);$i++){
+					if($params[$i] == "lastbackup"){
+						array_push($getdata,$today);
+					}else{
+						array_push($getdata,"");
+					}
+				}
+				$editDetail = call_user_func_array(array($db,'updateFirm'), $getdata);
+				}
+				if (!isset($_SESSION)) {
+					
+					session_start();
+				}
+				
+				$_SESSION['finance'] = array();
+				// echo 1221;
+				$_SESSION['finance']['uid']     = $user['uid'];
+				$_SESSION['finance']['api_key'] = $user["api_key"]; //echo $_SESSION['api_key'];
+				$_SESSION['finance']['name']    = $user['name'];
+				$_SESSION['finance']['firstname']    = $user['firstname'];
+				$_SESSION['finance']['lastname']    = $user['lastname']; //done
+				$_SESSION['finance']['phone']    = $user['phone'];
+				$_SESSION['finance']['role']    = $user['role'];
+				$_SESSION['finance']['branch']    = $user['branch'];
+				// $_SESSION['finance']['branchname']    = $user['branchname'];
+				$_SESSION['finance']['rolename']       = $user['type'];
+				$_SESSION['finance']['firm']       = $user['firm'];
+				$_SESSION['finance']['code']       = $user['code'];
+				// $_SESSION['finance']['sendmessage']       = $user['sendmessage'];
+				// $_SESSION['finance']['lrprint']       = $user['lrprint'];
+				$_SESSION['finance']['messageapikey']      = $user['messageapikey'];
+				$_SESSION['finance']['sender']      = $user['sender'];
+				// $_SESSION['finance']['gstin']       = $user['gstin'];
+				// $_SESSION['finance']['address']       = $user['address'];
+				// $_SESSION["finance"]['mstation'] = $user['mstation'];
+
+				// $period = $db->getPeriod();
+				// if(sizeof($period)>0){
+				// 	if($period[0]["fromperiod"] != "0000-00-00"){
+				// 		$_SESSION["finance"]["from"] = $period[0]["fromperiod"];
+				// 	}
+				// 	if($period[0]["toperiod"] != "0000-00-00"){
+				// 		$_SESSION["finance"]["to"] = $period[0]["toperiod"];
+				// 	}
+				// }
+			}else{
+				$response['status']  = "error";
+				$response['message'] = 'Login failed. Incorrect credentials';
+			}
+		} else {
+			$response['status']  = "error";
+			$response['message'] = 'No such user is registered';
+		}
+	}else{
+	   $response['status']  = "error";
+        $response['message'] = 'Your trial is been expired';
+	}
+
+    echoRespnse(200, $response);
+
+});
+
+
+
+$app->get('/logout', function() {
+    $db = new DbHandler();
+    $session = $db->destroySession();
+    $response["status"] = "info";
+    $response["message"] = "Logged out successfully";
+    echoRespnse(200, $response);
+});
+
+
+
+$app->get('/session', function() {
+    $db = new DbHandler();
+    $session = $db->getSession();
+	$response = array();
+	echo json_encode($session);
+    $response["uid"] = $session['uid'];
+    $response["api_key"] = $session["api_key"];
+    $response["name"] = $session['name'];//user detail
+	$response["firstname"] = $session['firstname'];//user detail
+	$response["lastname"] = $session['lastname'];//user detail
+	// $response["from"] = $session['from'];//user detail
+	// $response["to"] = $session['to'];//user detail
+	$response["firm"] = $session["firm"];
+	// $response["gstin"] = $session["gstin"];
+	// $response["address"] = $session["address"];
+
+	// $params = $db->getFunctionParam("firm");
+	// 	$getdata = array();
+	// 	for($i=0;$i<sizeof($params);$i++){
+	// 		if(getParams($app->request->get($params[$i]))){
+	// 			array_push($getdata,getParams($app->request->get($params[$i])));
+	// 		}else{
+	// 			array_push($getdata,"");
+	// 		}
+	// 	}
+	// 	$firmList = call_user_func_array(array($db,"getFirm"),$getdata);
+	// 	$response["firm"] = $firmList[0]["name"];
+	// 	$response["gstin"] = $firmList[0]["gstin"];
+	// 	$response["address"] = $firmList[0]["address"];
+
+
+	 echoRespnse(200, $response);
+});
+
+
 //start creditors
 $app->get('/creditors',function() use($app){
 	$response = array();
@@ -1096,9 +1239,9 @@ $app->get('/getnames',function() use($app){
 	$customer = $app->request->get("customer");
 	if($customer > 0){
 		// echo "SELECT DISTINCT(chiti),b.chitiname as chitiname,b.code as code FROM `cfchiticustomers` a LEFT JOIN cfchiti b on a.chiti=b.id where customer = '$customer'";
-		$chitinames  = $db->getOneRecord("SELECT DISTINCT(chiti) , b.chitiname as chitiname,b.code as code FROM `cfchiticustomers` a LEFT JOIN cfchiti b on a.chiti=b.id where customer = '$customer'");
+		$chitinames  = $db->getmultiRecord("SELECT DISTINCT(chiti) , b.chitiname as chitiname,b.code as code FROM `cfchiticustomers` a LEFT JOIN cfchiti b on a.chiti=b.id where customer = '$customer'");
 		
-		$secondcustomers = $db->getOneRecord("SELECT id FROM `cfcustomers` WHERE firstid = '$customer'");
+		$secondcustomers = $db->getmultiRecord("SELECT id FROM `cfcustomers` WHERE firstid = '$customer'");
 		if(sizeof($secondcustomers)){
 			$tmp = array();
 			for($t=0;$t<sizeof($secondcustomers);$t++){
@@ -1107,9 +1250,9 @@ $app->get('/getnames',function() use($app){
 			$customer = "";
 			$customer = implode(',', $tmp);
 			// echo "hi";
-			$customernames  = $db->getOneRecord("SELECT DISTINCT(customer + cusno), CONCAT(b.fname,' ' ,b.lname) as customername, a.cusno as cusno  FROM `cfchiticustomers` a LEFT JOIN cfcustomers b on a.customer=b.id WHERE customer IN ($customer)");
+			$customernames  = $db->getmultiRecord("SELECT DISTINCT(customer + cusno), CONCAT(b.fname,' ' ,b.lname) as customername, a.cusno as cusno  FROM `cfchiticustomers` a LEFT JOIN cfcustomers b on a.customer=b.id WHERE customer IN ($customer)");
 		}else{
-			$customernames  = $db->getOneRecord("SELECT DISTINCT(customer + cusno), CONCAT(b.fname,' ' ,b.lname) as customername, a.cusno as cusno  FROM `cfchiticustomers` a LEFT JOIN cfcustomers b on a.customer=b.id WHERE customer = '$customer'");
+			$customernames  = $db->getmultiRecord("SELECT DISTINCT(customer + cusno), CONCAT(b.fname,' ' ,b.lname) as customername, a.cusno as cusno  FROM `cfchiticustomers` a LEFT JOIN cfcustomers b on a.customer=b.id WHERE customer = '$customer'");
 		}
 		// echo $customer;
 		// echo "SELECT DISTINCT(customer + cusno), CONCAT(b.fname,' ' ,b.lname) as customername, a.cusno as cusno  FROM `cfchiticustomers` a LEFT JOIN cfcustomers b on a.customer=b.id WHERE customer = '$customer'";

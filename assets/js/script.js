@@ -130,6 +130,16 @@ function LoadingAnim(id,action){
 }
 
 
+function blockInput(){
+  $(":input").prop("disabled", true);
+  $("a").css("cursor","arrow").click(false);
+}
+
+function releaseInput(){
+  $(":input").prop("disabled", false);
+  $("a").unbind(false);
+}
+
 
 function popupAnim (popupname,action){
 	if(action == "open"){

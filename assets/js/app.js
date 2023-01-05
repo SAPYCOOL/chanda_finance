@@ -3,21 +3,31 @@ var app = angular.module('sripal', ['ngRoute', 'toaster', 'ui.bootstrap']);
 app.config(['$routeProvider',
     function($routeProvider) {
         $routeProvider.
-        when('/login', {
+            when('/', {
                 title: 'Login',
                 templateUrl: 'partials/login.html',
                 controller: 'loginCtrl'
             })
-            .when('/dashboard', {
-                title: '/',
-                templateUrl: 'partials/dashboard.html',
-                controller: 'dashboardCtrl'
+            .when('/login', {
+                title: 'Login',
+                templateUrl: 'partials/login.html',
+                controller: 'loginCtrl'
             })
-            .when('/', {
+            .when('/logout', {
+                title: 'Log out',
+                templateUrl: 'partials/login.html',
+                controller: 'logoutCtrl'
+            })
+            .when('/dashboard', {
                 title: '/',
                 templateUrl: 'partials/dashboard1.html',
                 controller: 'dashboard1Ctrl'
             })
+            // .when('/', {
+            //     title: '/',
+            //     templateUrl: 'partials/dashboard1.html',
+            //     controller: 'dashboard1Ctrl'
+            // })
             .when('/dailyshortcut', {
                 title: 'Daily collection',
                 templateUrl: 'partials/dailyshortcut.html',
@@ -272,26 +282,49 @@ app.config(['$routeProvider',
                 controller: 'incCtrl',
                 role: '0'
             })
-            .when('/404', {
-                title: 'Search',
-                templateUrl: 'partials/404.html',
-                controller: 'cityCtrl',
-                role: '0'
-            })
             .otherwise({
-                redirectTo: '/404'
+                redirectTo: '/404',
+                templateUrl: 'partials/404.html',
+                controller: 'loginCtrl'
             });
     }
 
 
 ]).run(function($rootScope, $location, Data) {
-    $rootScope.$on("$routeChangeSuccess", function(event, currentRoute, previousRoute) {
+    // $rootScope.$on("$routeChangeSuccess", function(event, currentRoute, previousRoute) {
 
-        $("html, body").animate({
-            scrollTop: 0
-        }, 200);
+    //     $("html, body").animate({
+    //         scrollTop: 0
+    //     }, 200);
 
+    // });
+    $rootScope.$on("$routeChangeStart", function(event, next, current) {
+        Data.get('session').then(function(results) {
+            if (results.uid) {
+                $rootScope.authenticated = true;
+                $rootScope.uid = results.uid;
+                $rootScope.firstname = results.firstname;
+                $rootScope.lastname = results.lastname;
+                $rootScope.name = results.name;
+                $rootScope.email = results.email;
+                var nextUrl = next.$$route.originalPath;
+
+                if (!$rootScope.uid) {
+                    if (nextUrl == '/login' || nextUrl == "/") {} else {
+                        $location.path("/login");
+                    }
+                } else {
+                    if (nextUrl == '/login' || nextUrl == "/") {
+                        $location.path("/dashboard");
+                    }
+                }
+            } else {
+                $rootScope.authenticated = false;
+                $location.path("/login");
+            }
+        });
     });
+    
     $rootScope.$on("$routeChangeStart", function(event, next, current) {
 
 
@@ -4756,7 +4789,7 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
         console.log(arr);
         if(arr && arr.tYpe == 5){
             var perday = 0; note = 0; note1 = 0;days = 100;matched = false;
-            (arr.cid == 259 )? days = 400:"";
+            (arr.cid == 499 )? days = 400:"";
             for(d=0;d<$scope.asalulist.length;d++){
                 perday = Number(arr.chitiamount)/days;
                 if(arr.cid == $scope.asalulist[d].chiti){
@@ -5082,8 +5115,49 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
 });
 
 
-app.controller('loginCtrl', function($route, $scope, $rootScope, $routeParams, $location, $http, Data) {
+app.controller('loginCtrl', function($scope, $rootScope, $location, Data) {
+    console.log();
+    $("#username").focus();
+    $scope.isLogin = function() {
+        if ($rootScope.authenticated) {
+            $location.path('/dashboard');
+        }
+        $rootScope.loaded = true;
+    }
+
+    $scope.isLogin();
+
+
+    $scope.doLogin = function(user) {
+        $scope.submitted = 1;
+        if ($scope.loginForm.$valid) {
+
+            blockInput();
+
+            Data.post('login', $scope.user).then(function(results) {
+                releaseInput();
+                pnotifyMessage(results.message, results.status);
+                $scope.submitted = 0;
+                if (results.status == "success") {
+                    $location.path('/dashboard');
+                }
+            });
+        }
+    };
 });
+
+
+app.controller('logoutCtrl', function($scope, $rootScope, $routeParams, $location, $http, Data) {
+    $scope.logout = function() {
+        Data.get('logout').then(function(results) {
+            //pnotifyMessage(results.message, results.status);
+            $location.path('/login');
+        });
+    }
+
+    $scope.logout();
+});
+
 
 
 app.controller('incCtrl', function($route, $scope, $rootScope, $routeParams, $location, $http, Data) {

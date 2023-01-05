@@ -39,6 +39,22 @@ class DbHandler {
 	}
 
 
+	public function updateFirm($lastbackup){
+	
+		$parameter=array($lastbackup);
+		$sqlrows=array("lastbackup=?");
+		$sql="";
+		$sql =$this->framePutSql($sql,$parameter,$sqlrows);
+		$a_params = array();
+		$bind_string = $this->bindString($parameter)	;
+		$bind_param = $this->bindParam($parameter)	;
+		
+		
+		$sql=substr($sql, 0, -1);		
+		$stmtR= $this->putQuery("UPDATE  firm SET ".$sql,$bind_string,$bind_param);
+	}
+
+
 	public function createInterest($interest){
 	
 		$created = date("y-m-d h:i:s");
@@ -1405,31 +1421,42 @@ if(sizeof($updatedata)>0){
 	 
 
 public function getSession(){
-		if (!isset($_SESSION)) {
-			session_start();
-		}
-		$sess = array();
-		
-		if(isset($_SESSION['account']) && isset($_SESSION['account']['uid']))
-		{
-			$sess["uid"] = $_SESSION['account']['uid'];
-			$sess["license"] = "Account";
-			$sess["name"] = $_SESSION['account']['name'];
-			$sess["api_key"] = $_SESSION['account']["api_key"];
-			$sess["firm"] = $_SESSION['account']["firm"];
-			$sess["firm_name"] = $_SESSION['account']["firm_name"];
-			$sess["role"] = $_SESSION['account']["role"];
-			$sess["role_name"] = $_SESSION['account']["role_name"];
-		}
-		else
-		{
-			$sess["uid"] = '';
-			$sess["license"] = "Account";
-			$sess["name"] = 'Guest';
-			$sess["api_key"] = '';
-		}
-		return $sess;
+	if (!isset($_SESSION)) {
+		session_start();
 	}
+	$sess = array();
+	// echo json_encode($_SESSION);
+	if(isset($_SESSION["finance"]['uid'])){
+		$sess["uid"] = $_SESSION["finance"]['uid'];
+		$sess["name"] = $_SESSION["finance"]['name'];
+		$sess["firstname"] = $_SESSION["finance"]['firstname'];
+		$sess["lastname"] = $_SESSION["finance"]['lastname'];
+		$sess["api_key"] = $_SESSION["finance"]["api_key"];
+		// $sess["from"] = $_SESSION["finance"]["from"];
+		// $sess["to"] = $_SESSION["finance"]["to"];
+		$sess["firm"] = $_SESSION["finance"]['firm'];
+		// $sess["gstin"] = $_SESSION["finance"]['gstin'];
+		// $sess["address"] = $_SESSION["finance"]['address'];
+		// $sess["code"] = $_SESSION['code'];
+		// $sess["db"]= $_SESSION['db'];
+	}else{
+		$sess["uid"] = '';
+		$sess["name"] = 'Guest';
+		$sess["api_key"] = '';
+		$sess["firstname"] = "";
+		$sess["lastname"] = "";
+		$sess["from"] = "";
+		$sess["to"] = "";
+
+		$data = $this->getOneRecord("select * from firm");
+		$sess["firm"] = $data["name"];
+		$sess["gstin"] = $data["gstin"];
+		$sess["address"] = $data["address"];
+		$sess["code"] =  $data['code'];
+		$sess["db"]= "" ;
+	}
+	return $sess;
+}	
 	
 	
 		public function destroySession(){
@@ -1889,7 +1916,7 @@ return $response;
 
 
 	//$user     = $db->getOneRecord("select *,a.name as name,f.name as firm , b.name as type from users a LEFT JOIN role  b on a.role=b.id LEFT JOIN firm f on a.firm=f.id where a.name='$name'");
-	public function getOneRecord($query) {
+	public function getmultiRecord($query) {
 		// echo json_encode($query);
         $r = $this->conn->query($query.' LIMIT 100') or die($this->conn->error.__LINE__);
 		return $result = mysqli_fetch_all($r, MYSQLI_ASSOC);
@@ -1897,9 +1924,19 @@ return $response;
         // return $result = $r->fetch_all($r);    
     }
 	
+
+	public function getOneRecord($query) {
+        $r = $this->conn->query($query.' LIMIT 1') or die($this->conn->error.__LINE__);
+        return $result = $r->fetch_assoc();    
+    }	
+
+
 	public function getFunctionParam($object){
 		if($object == "customers"){
 			return array("id","firstname","lastname","phoneno","hami","ishami","chitfund","hamifirstname","hamilastname","hamiphoneno","aadhar","passbook","debitcard","cheque","pnote","greensheet","note","forint","intrate","created","updated","fields","sort_by","sort_order","group_by","limit","offset","totalcount");
+		}
+		if($object == "firm"){
+			return array("id","name","gstin","address","created","updated","fields","sort_by","sort_order","limit","offset","totalcount");
 		}
 		if($object == "cfcustomers"){
 			return array("id","fname","lname","phone","first","firstid","firstidname","created","updated","fields","sort_by","sort_order","limit","offset","totalcount");
@@ -1995,7 +2032,9 @@ if($object == "chitfund"){
 	return array("customer","date","amount","type","status");
 	
 }
-
+if($object == "firm"){
+	return array("lastbackup");
+}
 		
 }
 }
