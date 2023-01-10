@@ -3982,6 +3982,7 @@ $scope.print = function() {
 
 
 app.controller('dashboard1Ctrl', function($route, $scope, $rootScope, $routeParams, $location, $http, Data) {
+    console.log($scope.authenticated);
     $scope.bfreextra = 0;
     $scope.dailyAct = 0 ;
     $scope.sameCus = 0;

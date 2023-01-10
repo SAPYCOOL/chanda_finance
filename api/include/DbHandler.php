@@ -1459,7 +1459,7 @@ public function getSession(){
 }	
 	
 	
-		public function destroySession(){
+	public function destroySession(){
 		if (!isset($_SESSION)) {
 			session_start();
 		}
