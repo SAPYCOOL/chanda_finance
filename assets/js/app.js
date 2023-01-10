@@ -300,6 +300,7 @@ app.config(['$routeProvider',
     // });
     $rootScope.$on("$routeChangeStart", function(event, next, current) {
         Data.get('session').then(function(results) {
+
             if (results.uid) {
                 $rootScope.authenticated = true;
                 $rootScope.uid = results.uid;
@@ -5117,7 +5118,6 @@ app.controller('dailyShortcutCtrl', function($route, $scope, $rootScope, $routeP
 
 
 app.controller('loginCtrl', function($scope, $rootScope, $location, Data) {
-    console.log();
     $("#username").focus();
     $scope.isLogin = function() {
         if ($rootScope.authenticated) {
@@ -5137,7 +5137,7 @@ app.controller('loginCtrl', function($scope, $rootScope, $location, Data) {
 
             Data.post('login', $scope.user).then(function(results) {
                 releaseInput();
-                pnotifyMessage(results.message, results.status);
+                Data.toast(results);
                 $scope.submitted = 0;
                 if (results.status == "success") {
                     $location.path('/dashboard');
@@ -5151,7 +5151,7 @@ app.controller('loginCtrl', function($scope, $rootScope, $location, Data) {
 app.controller('logoutCtrl', function($scope, $rootScope, $routeParams, $location, $http, Data) {
     $scope.logout = function() {
         Data.get('logout').then(function(results) {
-            //pnotifyMessage(results.message, results.status);
+            Data.toast(results);
             $location.path('/login');
         });
     }

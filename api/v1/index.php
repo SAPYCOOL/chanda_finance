@@ -359,6 +359,7 @@ $app->post('/login', function() use ($app) {
 $app->get('/logout', function() {
     $db = new DbHandler();
     $session = $db->destroySession();
+	// echo $session;
     $response["status"] = "info";
     $response["message"] = "Logged out successfully";
     echoRespnse(200, $response);
@@ -370,7 +371,7 @@ $app->get('/session', function() {
     $db = new DbHandler();
     $session = $db->getSession();
 	$response = array();
-	echo json_encode($session);
+	// echo json_encode($session);
     $response["uid"] = $session['uid'];
     $response["api_key"] = $session["api_key"];
     $response["name"] = $session['name'];//user detail

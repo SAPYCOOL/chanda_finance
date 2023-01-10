@@ -1461,11 +1461,12 @@ public function getSession(){
 	
 	public function destroySession(){
 		if (!isset($_SESSION)) {
-			session_start();
+		session_start();
 		}
-		if(isset($_SESSION['account']) && isset($_SESSION['account']['uid']))
+		if(isset($_SESSION) && isset($_SESSION['finance']))
 		{
-			unset($_SESSION['account']);
+			unset($_SESSION['finance']);
+			unset($_SESSION);
 			$info='info';
 			if(isSet($_COOKIE[$info]))
 			{
